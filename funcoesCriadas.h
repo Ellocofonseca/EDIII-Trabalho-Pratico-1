@@ -8,6 +8,10 @@
 #include <locale.h>
 
 //------MENSAGENS-DE-ERRO-----
+#define ERRO_PADRAO     "Falha no processamento do arquivo\n" //mensagem padrao de erro
+#define ERRO_REGISTRO   "Registro inexistente\n"              //mensagem de erro para registro inexistente
+#define ERRO_COMANDO    "O comando digitado não existe\n"     //mensagem de erro caso o usuario digite um comando invalido
+#define ERRO_CADASTRO   "Informação já inserida no arquivo\n" //mensagem de erro para dados ja cadastrados
 
 
 // CADA PAGINA DE DISCO POSSUI 1600 BYTES
@@ -45,6 +49,19 @@ typedef struct
 
 //--------FUNCOES-DO-PROGRAMA------------
 
+//FUNCOES PADRAO, REDIRECIONAMENTO
+void direcionaComando(int codigo);                              //FUNCAO DE SELECAO DE FUNCAO DE ACORDO COM O COMANDO
+
+//FUNCOES DE LEITURA
+void le_csv();
+
+//FUNCOES DE ESCRITA
+void escreve_cabecalho_bin(char nomebin[31],cabecalho cab);                 //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
+void escreve_dado_bin(char nomebin[31],dados DADO);                 //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
+
+//FUNCOES DE CADA COMANDO EM ORDEM
+void csv_para_bin();
+void exibe_campos();
 
 
 #endif // __FUNCOES__
