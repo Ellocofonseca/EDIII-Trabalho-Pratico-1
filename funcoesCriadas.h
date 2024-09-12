@@ -24,7 +24,7 @@ typedef struct
     int nroRegRem;              // Armazena o nro de registros logicamene marcados como removidos, inicia como 0            4 bytes
     int nroPagDisco;            // Armazena o nro de paginas de disco ocupadas pelo arq. de dados                           4 bytes
     int qttCompacta;            // Indica a qtd de vezes que o arquivo foi compactado                                       4 bytes
-    char lixo_pag[1579];        // Lixo para completar a pag de disco, preencher com '$'                                    1579 bytes
+    //char lixo_pag[1579];      // Lixo para completar a pag de disco, preencher com '$'                                    1579 bytes
 } cabecalho;
 
 
@@ -53,10 +53,12 @@ typedef struct
 void direcionaComando(int codigo);                              //FUNCAO DE SELECAO DE FUNCAO DE ACORDO COM O COMANDO
 
 //FUNCOES DE LEITURA
-void le_csv();
+void le_csv(char nomecsv[31]);
 
 //FUNCOES DE ESCRITA
-void escreve_cabecalho_bin(char nomebin[31],cabecalho cab);                 //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
+void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB);         //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE NUM ARQUIVO BIN
+void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB);         //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE atualiza o BIN
+void le_csv_e_escreve_bin(char nomecsv[31],cabecalho CAB);
 void escreve_dado_bin(char nomebin[31],dados DADO);                 //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
 
 //FUNCOES DE CADA COMANDO EM ORDEM

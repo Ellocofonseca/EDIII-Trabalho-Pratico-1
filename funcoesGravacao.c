@@ -7,37 +7,58 @@ void csv_para_bin()
     char nomecsv[31];           //nome do arquivo csv que sera aberto
     char nomebin[31];           //nome do arquivo bin que sera criado
     dados REGISTRO;             //variavel de registro
+    cabecalho CAB;              //variavel de cabecalho
 
     readline(nomecsv);
     readline(nomebin);
 
-    FILE *arquivocsv;
-    FILE *arquivobin;
-    arquivocsv = fopen(nomecsv, "r"); //abre o csv em modo leitura
+    CAB.status='0';
 
-    if(arquivocsv == NULL){
-        printf(ERRO_PADRAO);     
-    }
-    else{
+    escreve_cabecalho_bin(nomebin,CAB); //'reserva o espaco do cabecalho e marca a flag status'
 
 
-    }
+    //LER DO CSV, IR GRAVANDO OS REGISTROS E ATUALIZANDO A STRUCT DO CABECALHO
 
+
+
+    CAB.status='1';
+    atualiza_cabecalho_bin(nomebin,CAB);
 
     binarioNaTela(nomebin); //binario na tela, resultado
 }
 
+void le_csv_e_escreve_bin(char nomecsv[31],cabecalho CAB){
+    
+}
+
 void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB){
     FILE *arquivobin;
-    arquivobin = fopen(nomebin, "ab");
+    arquivobin = fopen(nomebin, "ab");  //cria o arquivo caso n exista
     fwrite(CAB.status, 1, 1, arquivobin);
     fwrite(&CAB.topo, 4, 1, arquivobin);
     fwrite(&CAB.proxRRN, 4, 1, arquivobin);
     fwrite(&CAB.nroRegRem, 4, 1, arquivobin);
-    fwrite(&CAB.nroPagDisco, 1, 1, arquivobin);
+    fwrite(&CAB.nroPagDisco, 4, 1, arquivobin);
     fwrite(&CAB.qttCompacta, 4, 1, arquivobin);
-    fwrite(CAB.lixo_pag, 1579, 1, arquivobin);
+    fwrite('$', 1, 1579, arquivobin);
     fclose(arquivobin);
+}
+
+void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB){
+    FILE *arquivobin;
+    arquivobin = fopen(nomebin, "rb+"); //abre o arquivo para atualizar o cabecalho
+    if(arquivobin==NULL){
+        printf(ERRO_PADRAO);
+    }
+    else{
+    fwrite(CAB.status, 1, 1, arquivobin);
+    fwrite(&CAB.topo, 4, 1, arquivobin);
+    fwrite(&CAB.proxRRN, 4, 1, arquivobin);
+    fwrite(&CAB.nroRegRem, 4, 1, arquivobin);
+    fwrite(&CAB.nroPagDisco, 4, 1, arquivobin);
+    fwrite(&CAB.qttCompacta, 4, 1, arquivobin);
+    fclose(arquivobin);
+    }
 }
 
 void escreve_dado_bin(char nomebin[31],dados DADO){
@@ -51,8 +72,4 @@ void escreve_dado_bin(char nomebin[31],dados DADO){
     fwrite(&DADO.velocidade, 4, 1, arquivobin);
     fwrite(DADO.variavel, 142, 1, arquivobin);
     fclose(arquivobin);
-}
-
-void le_csv(){
-    
 }
