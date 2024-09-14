@@ -1,4 +1,5 @@
 #include "./funcoesCriadas.h"
+#include "./funcoes_fornecidas.h"
 
 //  Essa funcao abre um arquivo ja existente em modo de leitura
 //  para que os registros de especie de todo o arquivo sejam exibidos
@@ -59,7 +60,7 @@ void exibe_registro(dados DADO){
     printf("Dieta: %s\n",DADO.variavel);
     printf("Lugar que habitava: %s\n",DADO.variavel);
     printf("Tamanho: %.1f m\n",DADO.tamanho);
-    printf("Velocidade: %d %sm/h\n",DADO.velocidade,DADO.unidadeMedida);
+    printf("Velocidade: %d %cm/h\n",DADO.velocidade,DADO.unidadeMedida);
 
 
 }
