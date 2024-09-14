@@ -8,28 +8,68 @@ void csv_para_bin()
     char nomebin[31];           //nome do arquivo bin que sera criado
     dados REGISTRO;             //variavel de registro
     cabecalho CAB;              //variavel de cabecalho
+    char linha[500];
+    char *token;
 
     readline(nomecsv);
     readline(nomebin);
 
+    FILE *arqcsv;
+
     CAB.status='0';
 
-    escreve_cabecalho_bin(nomebin,CAB); //'reserva o espaco do cabecalho e marca a flag status'
+    //escreve_cabecalho_bin(nomebin,CAB); //'reserva o espaco do cabecalho e marca a flag status'
 
 
     //LER DO CSV, IR GRAVANDO OS REGISTROS E ATUALIZANDO A STRUCT DO CABECALHO
+    while (fgets(linha, 500, arqcsv))
+    {
 
+        token = strtok(linha, ",");
+
+        while(token != NULL)
+        {
+            printf("Token: %s\n", token);
+            token = strtok(NULL, ",");
+        }
+
+    }
 
 
     CAB.status='1';
-    atualiza_cabecalho_bin(nomebin,CAB);
+    //atualiza_cabecalho_bin(nomebin,CAB);
 
-    binarioNaTela(nomebin); //binario na tela, resultado
+   // binarioNaTela(nomebin); //binario na tela, resultado
 }
 
 void le_csv_e_escreve_bin(char nomecsv[31],cabecalho CAB){
     
+    FILE *arq;
+    char linha[500];
+    char *token;
+
+    arq = fopen(nomecsv,"r");
+
+    //nome,dieta,habitat,populacao,tipo,velocidade,unidadeMedida,tamanho,especie,alimento
+    while (feof(arq) != true)
+    {
+        fgets(linha, 500, arq);
+
+        token = strtok(linha, ",");
+
+        while(token != NULL)
+        {
+            printf("Token: %s\n", token);
+            token = strtok(NULL, ",");
+        }
+
+    }
+    
+
+    return 0;
+
 }
+
 
 void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB){
     FILE *arquivobin;

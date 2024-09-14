@@ -1,4 +1,5 @@
-#include "funcoes_fornecidas.h"
+#include "./funcoes_fornecidas.h"
+#include "./funcoesCriadas.h"
 
 void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o código dessa função. */
 
@@ -61,4 +62,22 @@ void scan_quote_string(char *str) {
 	} else { // EOF
 		strcpy(str, "");
 	}
+}
+
+void readline(char* string) {
+    char c = 0;
+
+    do {
+        c = (char)getchar();
+    } while (c == '\n' || c == '\r');
+
+    int i = 0;
+
+    do {
+        string[i] = c;
+        i++;
+        c = getchar();
+    } while (c != '\n' && c != '\r');
+
+    string[i] = '\0';
 }

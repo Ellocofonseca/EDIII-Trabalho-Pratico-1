@@ -6,6 +6,7 @@ void direcionaComando(int codigo){
     switch (codigo){
 
     case 1:
+        csv_para_bin();
         break;
 
     case 2:

@@ -4,7 +4,7 @@
 //  para que os registros de especie de todo o arquivo sejam exibidos
 //  um atras do outro
     
-
+/*
 void exibe_campos()
 {
     char nomearq[31];           //nome do arquivo que sera lido
@@ -45,7 +45,7 @@ void exibe_campos()
     }
 }
 
-
+*/
 //funcao simples que recebe uma variavel de registro de especie
 //e exibe as informacoes contidas naquele registro
 void exibe_registro(dados DADO){

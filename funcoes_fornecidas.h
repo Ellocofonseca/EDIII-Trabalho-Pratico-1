@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 void scan_quote_string(char *str);
 
@@ -14,5 +15,9 @@ void scan_quote_string(char *str);
  * (você não vai perder pontos por isso se usar ela).
  */
 void binarioNaTela(char *nomeArquivoBinario);
+
+
+void readline(char *string);
+
 
 #endif // __FUNCOES_FORNECIDAS__
