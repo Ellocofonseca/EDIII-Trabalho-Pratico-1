@@ -44,20 +44,20 @@ void csv_para_bin()
         while (fgets(linha, 200, arqcsv))//le as linhas subsequentes ate chegar no fim do arquivo
         {
             //leitura de cada dado de uma linha do csv
-            nome = strtok(linha, ",");
-            dieta = strtok(NULL, ",");
-            habitat = strtok(NULL, ",");
-            token = strtok(NULL, ",");      //populacao
+            nome = strsep(&linha, ",");
+            dieta = strsep(NULL, ",");
+            habitat = strsep(NULL, ",");
+            token = strsep(&token, ",");      //populacao
             REGISTRO.populacao=atoi(token);
-            tipo = strtok(NULL, ",");
-            token = strtok(NULL, ",");      //velocidade
+            tipo = strsep(NULL, ",");
+            token = strsep(NULL, ",");      //velocidade
             REGISTRO.velocidade=atoi(token);
-            token = strtok(NULL, ",");      //unidMedida
+            token = strsep(NULL, ",");      //unidMedida
             REGISTRO.unidadeMedida=token[0];
-            token = strtok(NULL, ",");      //tamanho
+            token = strsep(NULL, ",");      //tamanho
             REGISTRO.tamanho=atof(token);
-            especie = strtok(NULL, ",");
-            alimento = strtok(NULL, "\n");
+            especie = strsep(NULL, ",");
+            alimento = strsep(NULL, "\n");
 
             REGISTRO.encadeamento=-1;
             REGISTRO.removido='0';
@@ -80,7 +80,7 @@ void csv_para_bin()
                 var[j] = '$';
             }
             strcpy(REGISTRO.variavel,var);  //coloca a string montada na variavel de registro
-
+            var[0]='\0';
             //GUARDA O REGISTRO NO ARQUIVO
             escreve_dado_bin(nomebin,REGISTRO);
             insercoes++;
