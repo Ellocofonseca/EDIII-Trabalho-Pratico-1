@@ -4,14 +4,16 @@
 void csv_para_bin()
 {
     int i,j;                    //variavel auxiliar
+    int insercoes;
     char nomecsv[31];           //nome do arquivo csv que sera aberto
     char nomebin[31];           //nome do arquivo bin que sera criado
     dados REGISTRO;             //variavel de registro
     cabecalho CAB;              //variavel de cabecalho
     char linha[200];
-    char limitador[2]="#";
     char *token;
 
+    //tokens/strings que formarao o campo de tamanho variavel do registro de especie
+    char limitador[2]="#";
     char *nome;
     char *especie;
     char *habitat;
@@ -24,8 +26,9 @@ void csv_para_bin()
     scanf("%s",nomebin);
 
     CAB.status='0';
+    insercoes=0;
 
-    //escreve_cabecalho_bin(nomebin,CAB); //'reserva o espaco do cabecalho e marca a flag status'
+    escreve_cabecalho_bin(nomebin,CAB); //'reserva o espaco do cabecalho e marca a flag status'
 
 
     //LER DO CSV, IR GRAVANDO OS REGISTROS E ATUALIZANDO A STRUCT DO CABECALHO
@@ -38,19 +41,29 @@ void csv_para_bin()
     }
     else{
         fgets(linha, 200, arqcsv);//le e "descarta" a primeira linha
-        while (fgets(linha, 200, arqcsv))//le as linhas subsequentes
+        while (fgets(linha, 200, arqcsv))//le as linhas subsequentes ate chegar no fim do arquivo
         {
+            //leitura de cada dado de uma linha do csv
             nome = strtok(linha, ",");
             dieta = strtok(NULL, ",");
             habitat = strtok(NULL, ",");
             token = strtok(NULL, ",");      //populacao
+            REGISTRO.populacao=atoi(token);
             tipo = strtok(NULL, ",");
             token = strtok(NULL, ",");      //velocidade
+            REGISTRO.velocidade=atoi(token);
             token = strtok(NULL, ",");      //unidMedida
+            REGISTRO.unidadeMedida=token[0];
             token = strtok(NULL, ",");      //tamanho
+            REGISTRO.tamanho=atof(token);
             especie = strtok(NULL, ",");
-            alimento = strtok(NULL, ",");
+            alimento = strtok(NULL, "\n");
 
+            REGISTRO.encadeamento=-1;
+            REGISTRO.removido='0';
+
+            //montagem do campo de tamanho variavel
+            var[0]='\0'; 
             strcat(var, nome);
             strcat(var, limitador);
             strcat(var, especie);
@@ -62,23 +75,34 @@ void csv_para_bin()
             strcat(var, dieta);
             strcat(var, limitador);
             strcat(var, alimento);
-            for(j=strlen(var); j<142;j++){    //coloca o cifrao no lugar dos espacos em branco, INCLUINDO O '\0'
+            var[strlen(var)-1]='#';
+            for(j=strlen(var); j<142;j++){    //coloca o cifrao no lugar dos espacos em branco
                 var[j] = '$';
             }
-            //GUARDA OS VALORES NO ARQUIVO
-            
+            strcpy(REGISTRO.variavel,var);  //coloca a string montada na variavel de registro
 
+            //GUARDA O REGISTRO NO ARQUIVO
+            escreve_dado_bin(nomebin,REGISTRO);
+            insercoes++;
 
-            var[0]='\0'; //reinicia a string de valor variavel
         }   
-        fclose(arqcsv);
+        fclose(arqcsv);//fecha o csv depois de tudo ter sido lido e guardado
     }
 
 
     CAB.status='1';
-    //atualiza_cabecalho_bin(nomebin,CAB);
+    CAB.topo=-1;
+    CAB.proxRRN=insercoes;
+    CAB.nroRegRem=0;
+    CAB.nroPagDisco=(1+(insercoes/10));
+    if(CAB.nroPagDisco*10<insercoes+10){
+        CAB.nroPagDisco++;
+    }
 
-   // binarioNaTela(nomebin); //binario na tela, resultado
+    CAB.qttCompacta=0;
+    atualiza_cabecalho_bin(nomebin,CAB);
+
+    binarioNaTela(nomebin); //binario na tela, resultado
 }
 
 
@@ -92,7 +116,8 @@ void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB){
     fwrite(&CAB.nroRegRem, 4, 1, arquivobin);
     fwrite(&CAB.nroPagDisco, 4, 1, arquivobin);
     fwrite(&CAB.qttCompacta, 4, 1, arquivobin);
-    fwrite(&lixo, 1, 1579, arquivobin);
+    for(int i=0;i<1579;i++)
+        fwrite(&lixo, 1, 1, arquivobin);
     fclose(arquivobin);
 }
 
