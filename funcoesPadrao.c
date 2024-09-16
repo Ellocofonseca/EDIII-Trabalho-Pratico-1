@@ -18,6 +18,7 @@ void direcionaComando(int codigo){
         break;
 
     case 4:
+        //remocao_logica();
         break;
 
     case 5:

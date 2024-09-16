@@ -43,7 +43,6 @@ typedef struct
                                 //  Cada campo variavel eh separado por um delimitador '#'
                                 //  As strings nao devem terminar com \0
                                 //  Se sobrar espaço preencher com '$'
-
 } dados;
 
 
@@ -53,21 +52,22 @@ typedef struct
 void direcionaComando(int codigo);                              //FUNCAO DE SELECAO DE FUNCAO DE ACORDO COM O COMANDO
 
 //FUNCOES DE LEITURA
-cabecalho le_cabecalho(FILE *arquivo);
-dados le_registro(FILE *arquivo);
+cabecalho le_cabecalho(FILE *arquivo);                          //FUNCAO QUE LE A PORCAO INICIAL DO CABECALHO DE UM ARQUIVO BIN
+dados le_registro(FILE *arquivo);                               //FUNCAO QUE LE UM DOS VARIOS DADOS
 
 //FUNCOES DE RELATORIO/PRINT
 void exibe_registro(dados DADO);
 
 //FUNCOES DE GRAVACAO/ESCRITA
-void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB);         //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE NUM ARQUIVO BIN
-void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB);         //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE atualiza o BIN
-void escreve_dado_bin(char nomebin[31],dados DADO);                 //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
+void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB);             //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE NUM ARQUIVO BIN
+void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB);            //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ATUALIZA O BIN
+void escreve_dado_bin(char nomebin[31],dados DADO);                     //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
+//void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin)  //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ATUALIZA O BIN
 
 //FUNCOES DE CADA COMANDO EM ORDEM
-void csv_para_bin();
-void exibe_campos();
-void busca_determinada();
+void csv_para_bin();            //COMANDO 1 -> LE DE UM ARQUIVO CVS E ARMAZENA SUAS INFORMACOES NUM ARQUIVO BINARIO 
+void exibe_campos();            //COMANDO 2 -> GERA UM RELATORIO QUE IMPRIME NO TERMINAL AS INFORMACOES DE TODAS AS ESPECIES NAO REMOVIDAS DE UM ARQUIVO BIN
+void busca_determinada();       //COMANDO 3 -> GERA UM RELATORIO QUE IMPRIME NO TERMINAL AS INFORMACOES DE ESPECIES QUE POSSUIREM PARAMETROS IGUAIS AOS DE PESQUISA 
 
 
 #endif // __FUNCOES__

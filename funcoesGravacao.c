@@ -9,11 +9,12 @@ void csv_para_bin()
     char nomebin[31];           //nome do arquivo bin que sera criado
     dados REGISTRO;             //variavel de registro
     cabecalho CAB;              //variavel de cabecalho
-    char* linha;
+
+    char* linha;                //variaveis que serao usadas para ler e manipular cada linha do csv      
     char tmp[200];
-    char *token;
 
     //tokens/strings que formarao o campo de tamanho variavel do registro de especie
+    char *token;            //usado para coletar os valores numericos(int e float)
     char limitador[2]="#";
     char *nome;
     char *especie;
@@ -91,14 +92,12 @@ void csv_para_bin()
 
             //GUARDA O REGISTRO NO ARQUIVO
             escreve_dado_bin(nomebin,REGISTRO);
-            insercoes++;
-
+            
         }   
         fclose(arqcsv);//fecha o csv depois de tudo ter sido lido e guardado
     }
 
-
-    CAB.status='1';
+    
     CAB.topo=-1;
     CAB.proxRRN=insercoes;
     CAB.nroRegRem=0;
@@ -108,54 +107,10 @@ void csv_para_bin()
     }
 
     CAB.qttCompacta=0;
+    CAB.status='1';
     atualiza_cabecalho_bin(nomebin,CAB);
 
     binarioNaTela(nomebin); //binario na tela, resultado
 }
 
-
-void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB){
-    FILE *arquivobin;
-    char lixo='$';
-    arquivobin = fopen(nomebin, "ab");  //cria o arquivo caso n exista
-    fwrite(&CAB.status, 1, 1, arquivobin);
-    fwrite(&CAB.topo, 4, 1, arquivobin);
-    fwrite(&CAB.proxRRN, 4, 1, arquivobin);
-    fwrite(&CAB.nroRegRem, 4, 1, arquivobin);
-    fwrite(&CAB.nroPagDisco, 4, 1, arquivobin);
-    fwrite(&CAB.qttCompacta, 4, 1, arquivobin);
-    for(int i=0;i<1579;i++)
-        fwrite(&lixo, 1, 1, arquivobin);
-    fclose(arquivobin);
-}
-
-void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB){
-    FILE *arquivobin;
-    arquivobin = fopen(nomebin, "rb+"); //abre o arquivo para atualizar o cabecalho
-    if(arquivobin==NULL){
-        printf(ERRO_PADRAO);
-    }
-    else{
-    fwrite(&CAB.status, 1, 1, arquivobin);
-    fwrite(&CAB.topo, 4, 1, arquivobin);
-    fwrite(&CAB.proxRRN, 4, 1, arquivobin);
-    fwrite(&CAB.nroRegRem, 4, 1, arquivobin);
-    fwrite(&CAB.nroPagDisco, 4, 1, arquivobin);
-    fwrite(&CAB.qttCompacta, 4, 1, arquivobin);
-    fclose(arquivobin);
-    }
-}
-
-void escreve_dado_bin(char nomebin[31],dados DADO){
-    FILE *arquivobin;
-    arquivobin = fopen(nomebin, "ab");
-    fwrite(&DADO.removido, 1, 1, arquivobin);
-    fwrite(&DADO.encadeamento, 4, 1, arquivobin);
-    fwrite(&DADO.populacao, 4, 1, arquivobin);
-    fwrite(&DADO.tamanho, 4, 1, arquivobin);
-    fwrite(&DADO.unidadeMedida, 1, 1, arquivobin);
-    fwrite(&DADO.velocidade, 4, 1, arquivobin);
-    fwrite(DADO.variavel, 142, 1, arquivobin);
-    fclose(arquivobin);
-}
 
