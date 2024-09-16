@@ -27,6 +27,7 @@ void csv_para_bin()
     char *dieta;
     char *alimento;
     char var[142];
+    float tam;
 
     scanf("%s",nomecsv);
     scanf("%s",nomebin);
@@ -49,6 +50,7 @@ void csv_para_bin()
         fgets(tmp, 200, arqcsv);//le e "descarta" a primeira linha
         while (fgets(tmp, 200, arqcsv))//le as linhas subsequentes ate chegar no fim do arquivo
         {
+            
             linha= strdup(tmp);
             //leitura de cada dado de uma linha do csv
             nome = strsep(&linha, ",");
@@ -63,8 +65,6 @@ void csv_para_bin()
             REGISTRO.unidadeMedida=token[0];
             token = strsep(&linha, ",");      //tamanho     //algum problema ao representar 0
             REGISTRO.tamanho=atof(token);
-            if(token[0]='\0')
-                REGISTRO.tamanho=36;
             especie = strsep(&linha, ",");
             alimento = strsep(&linha, "\r");
 
@@ -96,6 +96,7 @@ void csv_para_bin()
 
             //GUARDA O REGISTRO NO ARQUIVO
             escreve_dado_bin(nomebin,REGISTRO);
+            insercoes++;
             
         }   
         fclose(arqcsv);//fecha o csv depois de tudo ter sido lido e guardado
@@ -117,6 +118,138 @@ void csv_para_bin()
     binarioNaTela(nomebin); //binario na tela, resultado
 }
 
+
+//para evitar o uso de diversos fseeks o arquivo é lido de forma reversa
 void remocao_logica(){
+    int nroRemocoes,regRemovidos;
+    int i, codigo_campo;
+    char nomearq[31];           //nome do arquivo que sera lido
+    char nomecampo[21];         //campo que sera checado para pesquisa
+    char valorcampo[41];        //valor do campo que sera checado
+    dados DADO;                 //variavel de registro
+
+    cabecalho CAB;              //variavel do cabecalho
+
+    //ponteiros para uso strdup e strsep para ler a parte variavel do registro de dados
+    char *linha;
+    char *nome;
+    char *especie;
+    char *habitat;
+    char *tipo;
+    char *dieta;
+    char *alimento;
+
+    FILE *arquivo;
+    scanf("%s",nomearq);            //le o nome do arquivo que sera aberto
+    arquivo = fopen(nomearq, "rb+"); //abre o arquivo em modo de leitura binaria + escrita
+
+    if(arquivo==NULL){          //checa se o arquivo foi devidamente aberto
+        printf(ERRO_PADRAO);
+    }else{
+        fclose(arquivo);        //fecha o arquivo depois de checar se ele existe
+        scanf("%d",&nroRemocoes);
+
+        for(i=0;i<nroRemocoes;i++){
+            scanf("%s",nomecampo);
+            scan_quote_string(valorcampo); 
+
+            codigo_campo=checa_nome_campo(nomecampo);   //FUNCAO QUE TESTA A STRING NOMECAMPO E RETORNA UM INTEIRO DE ACORDO COM O NOME DE CAMPO
+
+            if(codigo_campo==-1)
+                printf(ERRO_COMANDO);
+            
+
+            DADO=le_registro(arquivo);
+
+            if (DADO.removido=='2') //a variavel removido eh alterada para '2' dentro da funcao le registro se chegar no fim do arquivo
+                break;
+
+            linha=strdup(DADO.variavel);    //separa os campos de tamanho variado do dado em varias strrings
+            nome = strsep(&linha, "#");
+            especie = strsep(&linha, "#");
+            habitat = strsep(&linha, "#");
+            tipo = strsep(&linha, "#");
+            dieta = strsep(&linha, "#");
+            alimento = strsep(&linha, "#");
+
+
+            while (codigo_campo!=-1)
+            {
+                switch (codigo_campo)
+                {
+                case 1:
+                    if (!strcmp(valorcampo,nome)){
+                        remove_dado_bin(nomearq,arquivo);
+                        regRemovidos++;
+                    }
+                    break;
+
+                case 2:
+                    if (!strcmp(valorcampo,especie)){
+                        remove_dado_bin(nomearq,arquivo);
+                        regRemovidos++;
+                    }
+                    break;
+
+                case 3:
+                    if (!strcmp(valorcampo,habitat)){
+                        remove_dado_bin(nomearq,arquivo);
+                        regRemovidos++;
+                    }
+                    break;
+
+                case 4:
+                    if (!strcmp(valorcampo,tipo)){
+                        remove_dado_bin(nomearq,arquivo);
+                        regRemovidos++;
+                    }
+                    break;
+
+                case 5:
+                    if (!strcmp(valorcampo,dieta)){
+                        remove_dado_bin(nomearq,arquivo);
+                        regRemovidos++;
+                    }
+                    break;
+
+                case 6:
+                    if (!strcmp(valorcampo,alimento)){
+                        remove_dado_bin(nomearq,arquivo);
+                        regRemovidos++;
+                    }
+                    break;
+
+                case 7:
+                    if (valorcampo[0]==DADO.unidadeMedida){
+                        remove_dado_bin(nomearq,arquivo);
+                        regRemovidos++;
+                    }
+                    break;
+
+                case 8:
+                    if (atoi(valorcampo)==DADO.velocidade){
+                        remove_dado_bin(nomearq,arquivo);
+                        regRemovidos++;
+                    }
+                    break;
+
+                case 9:
+                    if (fabs(atof(valorcampo)-DADO.tamanho)<0.001){
+                        remove_dado_bin(nomearq,arquivo);
+                        regRemovidos++;
+                    }
+                    break;
+                
+                default:
+                    break;
+                }//FIM DO SWITCH
+            }//FIM DO WHILE
+
+
+            
+        }//FIM DO FOR
+        CAB.nroRegRem=regRemovidos;
+        atualiza_cabecalho_bin(nomearq,CAB);
+    }
 
 }

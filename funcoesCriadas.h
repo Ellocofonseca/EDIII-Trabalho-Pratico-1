@@ -64,6 +64,7 @@ void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB);             //FUNCAO
 void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB);            //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ATUALIZA O BIN
 void escreve_dado_bin(char nomebin[31],dados DADO);                     //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
 //void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin)    //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ATUALIZA O BIN
+void remove_dado_bin(char nomebin[31],FILE *arquivobin);
 
 //FUNCOES DE CADA COMANDO EM ORDEM
 void csv_para_bin();            //COMANDO 1 -> LE DE UM ARQUIVO CVS E ARMAZENA SUAS INFORMACOES NUM ARQUIVO BINARIO 

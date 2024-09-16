@@ -85,9 +85,23 @@ void escreve_dado_bin(char nomebin[31],dados DADO){
     fwrite(DADO.variavel, 142, 1, arquivobin);
     fclose(arquivobin);
 }
-/*
+
 //a funcao atualiza um dado num determinado campo do arquivo binario, o ponteiro com a localizacao
 //de onde sera inserido o dado eh parametro da funcao
+void remove_dado_bin(char nomebin[31],FILE *arquivobin){
+    char lixo='$';
+    char remo='0';
+    fwrite(&remo, 1, 1, arquivobin);
+    fwrite(&lixo, 4, 1, arquivobin);
+    fwrite(&lixo, 4, 1, arquivobin);
+    fwrite(&lixo, 4, 1, arquivobin);
+    fwrite(&lixo, 1, 1, arquivobin);
+    fwrite(&lixo, 4, 1, arquivobin);
+    fwrite(&lixo, 142, 1, arquivobin);
+    fclose(arquivobin);
+}
+
+//a funcao atualiza um dado removendo ele logicamente e preenchendo o resto dos campos com o lixo "$"
 void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin){
 
     fwrite(&DADO.removido, 1, 1, arquivobin);
@@ -99,8 +113,4 @@ void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin){
     fwrite(DADO.variavel, 142, 1, arquivobin);
     fclose(arquivobin);
 }
-*/
 
-
-
-//FUNCOES DE ARQUIVO CSV

@@ -100,10 +100,7 @@ void busca_determinada(){
             fseek(arquivo,1600,SEEK_SET);
 
             //loop de leitura dos dados e suas exibicoes
-            while(1){
-
-                if(codigo_campo==-1)    //se o codigo digitado nao for valido nao le o arquivo
-                    break;
+            while(codigo_campo!=-1){
 
                 DADO=le_registro(arquivo);
 
