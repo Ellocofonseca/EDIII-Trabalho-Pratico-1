@@ -1,6 +1,10 @@
 #include "./funcoesCriadas.h"
 #include "./funcoes_fornecidas.h"
 
+
+//funcao que abre um arquivo csv para realizar a leitura dos dados dele para que esses dados sejam salvos
+//em um arquivo binario em formato especificado alem de seu cabecalho que tambem eh salvo
+
 void csv_para_bin()
 {
     int i,j;                    //variavel auxiliar
@@ -30,7 +34,7 @@ void csv_para_bin()
     CAB.status='0';
     insercoes=0;
 
-    escreve_cabecalho_bin(nomebin,CAB); //'reserva o espaco do cabecalho e marca a flag status'
+    escreve_cabecalho_bin(nomebin,CAB); //'reserva o espaco do cabecalho e marca a flag status='0'
 
 
     //LER DO CSV, IR GRAVANDO OS REGISTROS E ATUALIZANDO A STRUCT DO CABECALHO
@@ -87,7 +91,7 @@ void csv_para_bin()
 
             strcpy(REGISTRO.variavel,var);  //coloca a string montada na variavel de registro
             
-            for(j=0;j<142;j++)
+            for(j=0;j<142;j++)//limpa a string montada de tamanho variado 
                 var[j]='\0';
 
             //GUARDA O REGISTRO NO ARQUIVO
@@ -108,9 +112,11 @@ void csv_para_bin()
 
     CAB.qttCompacta=0;
     CAB.status='1';
-    atualiza_cabecalho_bin(nomebin,CAB);
+    atualiza_cabecalho_bin(nomebin,CAB);    //atualiza o cabecalho ao final da insercao de todos os dados do csv
 
     binarioNaTela(nomebin); //binario na tela, resultado
 }
 
+void remocao_logica(){
 
+}

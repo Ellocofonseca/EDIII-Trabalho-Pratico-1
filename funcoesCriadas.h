@@ -50,6 +50,7 @@ typedef struct
 
 //FUNCOES PADRAO, REDIRECIONAMENTO
 void direcionaComando(int codigo);                              //FUNCAO DE SELECAO DE FUNCAO DE ACORDO COM O COMANDO
+int checa_nome_campo(char *string);                             //FUNCAO QUE RETORNA UM INTEIRO DE ACORDO COM O NOME DE UM CAMPO ESCRITO
 
 //FUNCOES DE LEITURA
 cabecalho le_cabecalho(FILE *arquivo);                          //FUNCAO QUE LE A PORCAO INICIAL DO CABECALHO DE UM ARQUIVO BIN
@@ -58,16 +59,16 @@ dados le_registro(FILE *arquivo);                               //FUNCAO QUE LE 
 //FUNCOES DE RELATORIO/PRINT
 void exibe_registro(dados DADO);
 
-//FUNCOES DE GRAVACAO/ESCRITA
+//FUNCOES DE GRAVACAO/EDICAO
 void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB);             //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE NUM ARQUIVO BIN
 void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB);            //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ATUALIZA O BIN
 void escreve_dado_bin(char nomebin[31],dados DADO);                     //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
-//void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin)  //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ATUALIZA O BIN
+//void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin)    //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ATUALIZA O BIN
 
 //FUNCOES DE CADA COMANDO EM ORDEM
 void csv_para_bin();            //COMANDO 1 -> LE DE UM ARQUIVO CVS E ARMAZENA SUAS INFORMACOES NUM ARQUIVO BINARIO 
 void exibe_campos();            //COMANDO 2 -> GERA UM RELATORIO QUE IMPRIME NO TERMINAL AS INFORMACOES DE TODAS AS ESPECIES NAO REMOVIDAS DE UM ARQUIVO BIN
 void busca_determinada();       //COMANDO 3 -> GERA UM RELATORIO QUE IMPRIME NO TERMINAL AS INFORMACOES DE ESPECIES QUE POSSUIREM PARAMETROS IGUAIS AOS DE PESQUISA 
-
+void remocao_logica();          //COMANDO 4 -> REALIZA A REMOCAO LOGICA DE DADOS ESPECIFICADOS
 
 #endif // __FUNCOES__

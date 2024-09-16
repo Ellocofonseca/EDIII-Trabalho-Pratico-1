@@ -44,16 +44,23 @@ void exibe_campos()
     }
 }
 
+
+
+//  Essa funcao abre um arquivo ja existente em modo de leitura
+//  para que os registros de especie do arquivo que passarem
+//  uma condicao de pesquisa sejam exibidos
+
 void busca_determinada(){
     int nroBuscas,regEncontrados;
-    int i;
+    int i, codigo_campo;
     char nomearq[31];           //nome do arquivo que sera lido
-    char nomecampo[21];
-    char valorcampo[41];
+    char nomecampo[21];         //campo que sera checado para pesquisa
+    char valorcampo[41];        //valor do campo que sera checado
     dados DADO;                 //variavel de registro
     cabecalho CAB;              //variavel do cabecalho
 
-    char* linha;
+    //ponteiros para uso strdup e strsep para ler a parte variavel do registro de dados
+    char *linha;
     char *nome;
     char *especie;
     char *habitat;
@@ -62,24 +69,30 @@ void busca_determinada(){
     char *alimento;
 
     FILE *arquivo;
-    scanf("%s",nomearq);        //le o nome do arquivo que sera aberto
-    arquivo = fopen(nomearq, "rb");
+    scanf("%s",nomearq);            //le o nome do arquivo que sera aberto
+    arquivo = fopen(nomearq, "rb"); //abre o arquivo em modo de leitura binaria
 
-    if(arquivo==NULL){
+    if(arquivo==NULL){          //checa se o arquivo foi devidamente aberto
         printf(ERRO_PADRAO);
     }else{
-        fclose(arquivo);
+        fclose(arquivo);        //fecha o arquivo depois de checar se ele existe
         scanf("%d",&nroBuscas);
 
         for(i=0;i<nroBuscas;i++){
-            scanf("%s",nomecampo);          //FAZER UMA CHECAGEM PARA VER SE O NOME DO CAMPO EXISTE
-            scan_quote_string(valorcampo);
+            scanf("%s",nomecampo);
+            scan_quote_string(valorcampo); 
 
+            codigo_campo=checa_nome_campo(nomecampo);   //FUNCAO QUE TESTA A STRING NOMECAMPO E RETORNA UM INTEIRO DE ACORDO COM O NOME DE CAMPO
+
+            if(codigo_campo==-1)
+                printf(ERRO_COMANDO);
+            
+            //print do nro da busca que foi feita
             printf("Busca %d\n",i+1);
             regEncontrados=0;
 
+            //abre o arquivo e le o cabecalho
             arquivo = fopen(nomearq, "rb");
-
             CAB=le_cabecalho(arquivo);
 
             
@@ -88,12 +101,16 @@ void busca_determinada(){
 
             //loop de leitura dos dados e suas exibicoes
             while(1){
-                DADO=le_registro(arquivo);
 
-                if (DADO.removido=='2') //a variavel removido eh alterada dentro da funcao le registro se chegar no fim do arquivo
+                if(codigo_campo==-1)    //se o codigo digitado nao for valido nao le o arquivo
                     break;
 
-                linha=strdup(DADO.variavel);
+                DADO=le_registro(arquivo);
+
+                if (DADO.removido=='2') //a variavel removido eh alterada para '2' dentro da funcao le registro se chegar no fim do arquivo
+                    break;
+
+                linha=strdup(DADO.variavel);    //separa os campos de tamanho variado do dado em varias strrings
                 nome = strsep(&linha, "#");
                 especie = strsep(&linha, "#");
                 habitat = strsep(&linha, "#");
@@ -101,81 +118,92 @@ void busca_determinada(){
                 dieta = strsep(&linha, "#");
                 alimento = strsep(&linha, "#");
 
-
-
-                if(!strcmp(nomecampo,"nome")){          //FAZER UMA FUNCAO QUE RETORNA UM VALOR DE ACORDO COM OQ FOI SELECIONADO E USAR SWITCH
+                switch (codigo_campo)
+                {
+                case 1:
                     if (!strcmp(valorcampo,nome)){
                         exibe_registro(DADO);
                         regEncontrados++;
                     }
-                }
-                if(!strcmp(nomecampo,"especie")){
+                    break;
+
+                case 2:
                     if (!strcmp(valorcampo,especie)){
                         exibe_registro(DADO);
                         regEncontrados++;
                     }
-                }
-                if(!strcmp(nomecampo,"habitat")){
+                    break;
+
+                case 3:
                     if (!strcmp(valorcampo,habitat)){
                         exibe_registro(DADO);
                         regEncontrados++;
                     }
-                }
-                if(!strcmp(nomecampo,"tipo")){
+                    break;
+
+                case 4:
                     if (!strcmp(valorcampo,tipo)){
                         exibe_registro(DADO);
                         regEncontrados++;
                     }
-                }
-                if(!strcmp(nomecampo,"dieta")){
+                    break;
+
+                case 5:
                     if (!strcmp(valorcampo,dieta)){
                         exibe_registro(DADO);
                         regEncontrados++;
                     }
-                }
-                if(!strcmp(nomecampo,"alimento")){
+                    break;
+
+                case 6:
                     if (!strcmp(valorcampo,alimento)){
                         exibe_registro(DADO);
                         regEncontrados++;
                     }
-                }
-                if(!strcmp(nomecampo,"unidade")){
+                    break;
+
+                case 7:
                     if (valorcampo[0]==DADO.unidadeMedida){
                         exibe_registro(DADO);
                         regEncontrados++;
                     }
-                }
-                if(!strcmp(nomecampo,"velocidade")){
+                    break;
+
+                case 8:
                     if (atoi(valorcampo)==DADO.velocidade){
                         exibe_registro(DADO);
                         regEncontrados++;
                     }
-                }
-                if(!strcmp(nomecampo,"tamanho")){
+                    break;
+
+                case 9:
                     if (fabs(atof(valorcampo)-DADO.tamanho)<0.001){
                         exibe_registro(DADO);
                         regEncontrados++;
                     }
-                }
+                    break;
                 
+                default:
+                    break;
+                }
+  
             }
 
             fclose(arquivo);
             
-            if(regEncontrados==0){
+            if(regEncontrados==-1 && codigo_campo!=-1){
                 printf(ERRO_REGISTRO);
                 printf("\n");
             }
             printf("Numero de paginas de disco: %d\n\n",CAB.nroPagDisco);
+
         }
+
     }
-
-
-
 }
-
 //funcao simples que recebe uma variavel de registro de especie
 //e exibe as informacoes contidas naquele registro
+
 void exibe_registro(dados DADO){
 
     //ponteiros utilizados nas funcoes strdup e strsep, com elas eh possivel separar 

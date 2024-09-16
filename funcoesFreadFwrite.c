@@ -103,4 +103,4 @@ void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin){
 
 
 
-//FUNCOES DE LEITURA DE ARQUIVO CSV
+//FUNCOES DE ARQUIVO CSV
