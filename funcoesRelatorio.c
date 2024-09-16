@@ -10,9 +10,9 @@ void exibe_campos()
 {
     char nomearq[31];           //nome do arquivo que sera lido
     dados DADO;                 //variavel de registro
-    cabecalho CAB;
+    cabecalho CAB;              //variavel do cabecalho
 
-    scanf("%s",nomearq);
+    scanf("%s",nomearq);        //le o nome do arquivo que sera aberto
     
     FILE *arquivo;
     arquivo = fopen(nomearq, "rb");
@@ -32,9 +32,10 @@ void exibe_campos()
         fread(&CAB.proxRRN,4,1,arquivo);
         fread(&CAB.nroRegRem,4,1,arquivo);
         fread(&CAB.nroPagDisco,4,1,arquivo);
-        
+        //ajusta o ponteiro para o comeco dos dados
         fseek(arquivo,1600,SEEK_SET);
 
+        //loop de leitura dos dados e suas exibicoes
         while(1){
             if(fread(&DADO.removido,1,1,arquivo)==0)
                 break;
@@ -45,9 +46,9 @@ void exibe_campos()
             fread(&DADO.velocidade,4,1,arquivo);
             if(fread(DADO.variavel,142,1,arquivo)==0)
                 break;
-            
+
             if (DADO.removido=='0')
-                exibe_registro(DADO);//exibe o registro apos salvar os campos, APENAS SE A FLAG FOR REMOVIDO FOR '0'
+                exibe_registro(DADO);//exibe o registro apos salvar os campos, APENAS SE A FLAG REMOVIDO FOR '0'
         }
         fclose(arquivo); // fecha o arquivo
 
@@ -60,6 +61,8 @@ void exibe_campos()
 //e exibe as informacoes contidas naquele registro
 void exibe_registro(dados DADO){
 
+    //ponteiros utilizados nas funcoes strdup e strsep, com elas eh possivel separar 
+    //as palavras de acordo com o divisor '#' e contabilizar informacoes nao inseridas
     char* linha;
     char *nome;
     char *especie;
@@ -76,8 +79,8 @@ void exibe_registro(dados DADO){
     dieta = strsep(&linha, "#");
     alimento = strsep(&linha, "#");
     
-    //setlocale(LC_ALL, "");      //caracteres da lingua portuguesa
-    
+    //print dos dados das criaturas, se nao constar nao eh exibido
+
     printf("Nome: %s\n",nome);
 
     if(strcmp(especie,""))
