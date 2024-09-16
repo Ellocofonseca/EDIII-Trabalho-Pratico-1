@@ -10,6 +10,7 @@ void direcionaComando(int codigo){
         break;
 
     case 2:
+        exibe_campos();
         break;
 
     case 3:

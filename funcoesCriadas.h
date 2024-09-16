@@ -53,17 +53,17 @@ typedef struct
 //FUNCOES PADRAO, REDIRECIONAMENTO
 void direcionaComando(int codigo);                              //FUNCAO DE SELECAO DE FUNCAO DE ACORDO COM O COMANDO
 
-//FUNCOES DE LEITURA
+//FUNCOES DE EXIBICAO
+void exibe_registro(dados DADO);
 
 //FUNCOES DE ESCRITA
 void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB);         //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE NUM ARQUIVO BIN
 void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB);         //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE atualiza o BIN
-void le_csv_e_escreve_bin(char nomecsv[31],cabecalho CAB);
 void escreve_dado_bin(char nomebin[31],dados DADO);                 //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
 
 //FUNCOES DE CADA COMANDO EM ORDEM
 void csv_para_bin();
-void exibe_registro(dados DADO);
+void exibe_campos();
 
 
 #endif // __FUNCOES__

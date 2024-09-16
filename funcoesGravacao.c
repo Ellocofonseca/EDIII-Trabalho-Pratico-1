@@ -9,7 +9,8 @@ void csv_para_bin()
     char nomebin[31];           //nome do arquivo bin que sera criado
     dados REGISTRO;             //variavel de registro
     cabecalho CAB;              //variavel de cabecalho
-    char linha[200];
+    char* linha;
+    char tmp[200];
     char *token;
 
     //tokens/strings que formarao o campo de tamanho variavel do registro de especie
@@ -40,30 +41,33 @@ void csv_para_bin()
         printf(ERRO_PADRAO);
     }
     else{
-        fgets(linha, 200, arqcsv);//le e "descarta" a primeira linha
-        while (fgets(linha, 200, arqcsv))//le as linhas subsequentes ate chegar no fim do arquivo
+        fgets(tmp, 200, arqcsv);//le e "descarta" a primeira linha
+        while (fgets(tmp, 200, arqcsv))//le as linhas subsequentes ate chegar no fim do arquivo
         {
+            linha= strdup(tmp);
             //leitura de cada dado de uma linha do csv
             nome = strsep(&linha, ",");
-            dieta = strsep(NULL, ",");
-            habitat = strsep(NULL, ",");
-            token = strsep(&token, ",");      //populacao
+            dieta = strsep(&linha, ",");
+            habitat = strsep(&linha, ",");
+            token = strsep(&linha, ",");      //populacao
             REGISTRO.populacao=atoi(token);
-            tipo = strsep(NULL, ",");
-            token = strsep(NULL, ",");      //velocidade
+            tipo = strsep(&linha, ",");
+            token = strsep(&linha, ",");      //velocidade
             REGISTRO.velocidade=atoi(token);
-            token = strsep(NULL, ",");      //unidMedida
+            token = strsep(&linha, ",");      //unidMedida
             REGISTRO.unidadeMedida=token[0];
-            token = strsep(NULL, ",");      //tamanho
+            token = strsep(&linha, ",");      //tamanho     //algum problema ao representar 0
             REGISTRO.tamanho=atof(token);
-            especie = strsep(NULL, ",");
-            alimento = strsep(NULL, "\n");
+            if(token[0]='\0')
+                REGISTRO.tamanho=36;
+            especie = strsep(&linha, ",");
+            alimento = strsep(&linha, "\r");
 
             REGISTRO.encadeamento=-1;
             REGISTRO.removido='0';
 
-            //montagem do campo de tamanho variavel
-            var[0]='\0'; 
+            //montagem do campo de tamanho variavel 
+            var[0]='\0';
             strcat(var, nome);
             strcat(var, limitador);
             strcat(var, especie);
@@ -75,12 +79,16 @@ void csv_para_bin()
             strcat(var, dieta);
             strcat(var, limitador);
             strcat(var, alimento);
-            var[strlen(var)-1]='#';
-            for(j=strlen(var); j<142;j++){    //coloca o cifrao no lugar dos espacos em branco
+            strcat(var, limitador);
+
+            for(j=strlen(var); j<142;j++)    //coloca o cifrao no lugar dos espacos em branco
                 var[j] = '$';
-            }
+
             strcpy(REGISTRO.variavel,var);  //coloca a string montada na variavel de registro
-            var[0]='\0';
+            
+            for(j=0;j<142;j++)
+                var[j]='\0';
+
             //GUARDA O REGISTRO NO ARQUIVO
             escreve_dado_bin(nomebin,REGISTRO);
             insercoes++;
