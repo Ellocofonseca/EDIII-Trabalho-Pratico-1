@@ -48,7 +48,7 @@ typedef struct
 
 //--------FUNCOES-DO-PROGRAMA------------
 
-//FUNCOES PADRAO, REDIRECIONAMENTO
+//FUNCOES PADRAO, REDIRECIONAMENTO, COMPARACAO
 void direcionaComando(int codigo);                              //FUNCAO DE SELECAO DE FUNCAO DE ACORDO COM O COMANDO
 int checa_nome_campo(char *string);                             //FUNCAO QUE RETORNA UM INTEIRO DE ACORDO COM O NOME DE UM CAMPO ESCRITO
 
