@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <locale.h>
-#include<stdbool.h>
+#include <math.h>
 
 //------MENSAGENS-DE-ERRO-----
 #define ERRO_PADRAO     "Falha no processamento do arquivo\n" //mensagem padrao de erro
@@ -53,10 +52,14 @@ typedef struct
 //FUNCOES PADRAO, REDIRECIONAMENTO
 void direcionaComando(int codigo);                              //FUNCAO DE SELECAO DE FUNCAO DE ACORDO COM O COMANDO
 
-//FUNCOES DE EXIBICAO
+//FUNCOES DE LEITURA
+cabecalho le_cabecalho(FILE *arquivo);
+dados le_registro(FILE *arquivo);
+
+//FUNCOES DE RELATORIO/PRINT
 void exibe_registro(dados DADO);
 
-//FUNCOES DE ESCRITA
+//FUNCOES DE GRAVACAO/ESCRITA
 void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB);         //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE NUM ARQUIVO BIN
 void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB);         //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE atualiza o BIN
 void escreve_dado_bin(char nomebin[31],dados DADO);                 //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
@@ -64,6 +67,7 @@ void escreve_dado_bin(char nomebin[31],dados DADO);                 //FUNCAO QUE
 //FUNCOES DE CADA COMANDO EM ORDEM
 void csv_para_bin();
 void exibe_campos();
+void busca_determinada();
 
 
 #endif // __FUNCOES__

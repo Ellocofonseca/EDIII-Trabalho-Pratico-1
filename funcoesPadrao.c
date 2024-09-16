@@ -14,6 +14,7 @@ void direcionaComando(int codigo){
         break;
 
     case 3:
+        busca_determinada();
         break;
 
     case 4:

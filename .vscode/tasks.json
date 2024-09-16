@@ -9,7 +9,8 @@
                 "-g",
                 "${fileDirname}/*.c",
                 "-o",
-                "${fileDirname}/main"
+                "${fileDirname}/main",
+                "-lm"
             ],
             "options": {
                 "cwd": "${fileDirname}"
