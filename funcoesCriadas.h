@@ -35,7 +35,7 @@ typedef struct
     int encadeamento;           //  Armazena o RRN do proximo registro logicamente removido           4 bytes
     int populacao;              //  Qtd de individuos da especie que viviam em determinado lugar      4 bytes
     float tamanho;              //  Tamanho do individuo                                              4 bytes
-    char unidadeMedida;         //  Unidade de medida da velocidade do individuo                      1 byte
+    char unidadeMedida;         //  Unidade de medida da velocidade do individuo                   1 byte
     int velocidade;             //  Velocidade do individuo                                           4 bytes
 
     char variavel[142];         //  Bytes variaveis                                                   142 bytes

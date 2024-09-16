@@ -50,22 +50,39 @@ void csv_para_bin()
         fgets(tmp, 200, arqcsv);//le e "descarta" a primeira linha
         while (fgets(tmp, 200, arqcsv))//le as linhas subsequentes ate chegar no fim do arquivo
         {
-            
             linha= strdup(tmp);
             //leitura de cada dado de uma linha do csv
             nome = strsep(&linha, ",");
+
             dieta = strsep(&linha, ",");
+
             habitat = strsep(&linha, ",");
+
             token = strsep(&linha, ",");      //populacao
             REGISTRO.populacao=atoi(token);
+            if (REGISTRO.populacao==0)          //se o campo estiver vazio coloca o valor invalido -1
+                REGISTRO.populacao=-1;
+
             tipo = strsep(&linha, ",");
-            token = strsep(&linha, ",");      //velocidade
+
+            token = strsep(&linha, ",");        //velocidade
             REGISTRO.velocidade=atoi(token);
-            token = strsep(&linha, ",");      //unidMedida
+            if (REGISTRO.velocidade==0)            //se o campo estiver vazio coloca o valor invalido -1
+                REGISTRO.velocidade=-1;
+            
+            token = strsep(&linha, ",");         //unidMedida
             REGISTRO.unidadeMedida=token[0];
+            if (!strcmp(token,""))              //se o campo estiver vazio coloca o valor invalido $
+                REGISTRO.unidadeMedida='$';
+
+
             token = strsep(&linha, ",");      //tamanho     //algum problema ao representar 0
             REGISTRO.tamanho=atof(token);
+            if (fabs(0-REGISTRO.tamanho)<0.001)//se o campo estiver vazio coloca o valor invalido -1
+                REGISTRO.tamanho=-1;
+
             especie = strsep(&linha, ",");
+
             alimento = strsep(&linha, "\r");
 
             REGISTRO.encadeamento=-1;
