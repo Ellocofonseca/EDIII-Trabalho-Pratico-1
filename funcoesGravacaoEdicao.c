@@ -75,7 +75,7 @@ void csv_para_bin()
                 REGISTRO.unidadeMedida='$';
 
 
-            token = strsep(&linha, ",");      //tamanho     //algum problema ao representar 0
+            token = strsep(&linha, ",");      //tamanho  
             REGISTRO.tamanho=atof(token);
             if (fabs(0-REGISTRO.tamanho)<0.001)//se o campo estiver vazio coloca o valor invalido -1
                 REGISTRO.tamanho=-1;
@@ -135,17 +135,20 @@ void csv_para_bin()
 }
 
 
-//lista encadeada que eh encadeada a partir da ordem de remocao. no arquivo 11 a primeira remocao ocorreu no rrn300 por ex (topo)
+//funcao que realiza a remocao logica e encadeia os dados em formato de pilha
+//sempre que um dado eh removido ele recebe o valor de topo no encadeamento e seu rrn vira o novo valor de topo atualizado
 void remocao_logica(){
 
 
-    int nroRemocoes,regRemovidos;
-    int i, codigo_campo;
+    int nroRemocoes,regRemovidos,encadeamento,topo;
+    int i, codigo_campo;    
     char nomearq[31];           //nome do arquivo que sera lido
     char nomecampo[21];         //campo que sera checado para pesquisa
     char valorcampo[41];        //valor do campo que sera checado
+    int valorint;               //valor em int do campo desejado
+    float valorfloat;           //valor em float do campo desejado
+    char valorchar;             //valor em char do campo desejado
     dados DADO;                 //variavel de registro
-
     cabecalho CAB;              //variavel do cabecalho
 
     //ponteiros para uso strdup e strsep para ler a parte variavel do registro de dados
@@ -161,125 +164,194 @@ void remocao_logica(){
     scanf("%s",nomearq);            //le o nome do arquivo que sera aberto
     arquivo = fopen(nomearq, "rb+"); //abre o arquivo em modo de leitura binaria + escrita
 
-    if(arquivo==NULL){          //checa se o arquivo foi devidamente aberto
+    
+    if(arquivo==NULL){          //checa se o arquivo foi devidamente aberto antes de continuar
         printf(ERRO_PADRAO);
     }else{
-        fclose(arquivo);        //fecha o arquivo depois de checar se ele existe
+        CAB=le_cabecalho(arquivo);  //le o cabecalho e atualiza ele com status 0  para prosesguir
+        CAB.status='0';
+        
+        fclose(arquivo);            //fecha o arquivo apos ler o cabecalho
+
+        atualiza_cabecalho_bin(nomearq,CAB);    //atualiza o cabecalho com status 0
+        
+        //le o nro de remocoes que serao feitas
         scanf("%d",&nroRemocoes);
 
-        for(i=0;i<nroRemocoes;i++){
-            scanf("%s",nomecampo);
-            scan_quote_string(valorcampo); 
+        regRemovidos=CAB.nroRegRem; //guarda a qtd de remocoes que foram feitas anteriormente antes de prosseguir
+        topo=CAB.topo;              //guarda o RRN do topo da pilha de remocao
 
+        for(i=0;i<nroRemocoes;i++){//loop das remocoes que serao feitas
+            encadeamento=-1;
+
+            arquivo = fopen(nomearq, "rb+");//abre o arquivo novamente em modo de leitura+escrita
+
+            //coleta qual campo e qual seu valor para realizar as remocoes
+            scanf("%s",nomecampo);
             codigo_campo=checa_nome_campo(nomecampo);   //FUNCAO QUE TESTA A STRING NOMECAMPO E RETORNA UM INTEIRO DE ACORDO COM O NOME DE CAMPO
 
-            if(codigo_campo==-1)
+            //muda o tipo de leitura baseado no campo especificado
+            if(codigo_campo==9){
+                scanf("%f",&valorfloat);
+            }else if(codigo_campo==8 || codigo_campo==10){
+                scanf("%d",&valorint);
+            }else if(codigo_campo==7){
+                scanf("%c",&valorchar);
+            }else{
+                scan_quote_string(valorcampo);
+            } 
+
+
+            if(codigo_campo==-1)               //se nomecampo for invalido avisa
                 printf(ERRO_COMANDO);
-            
 
-            DADO=le_registro(arquivo);
+            fseek(arquivo,1600,SEEK_SET);               //ajusta o ponteiro do arquivo para o começo dos dados
 
-            if (DADO.removido=='2') //a variavel removido eh alterada para '2' dentro da funcao le registro se chegar no fim do arquivo
-                break;
-
-            linha=strdup(DADO.variavel);    //separa os campos de tamanho variado do dado em varias strrings
-            nome = strsep(&linha, "#");
-            especie = strsep(&linha, "#");
-            habitat = strsep(&linha, "#");
-            tipo = strsep(&linha, "#");
-            dieta = strsep(&linha, "#");
-            alimento = strsep(&linha, "#");
-
-
-            while (codigo_campo!=-1)
+            while (codigo_campo!=-1)        //se nomecampo for invalido nao faz a leitura do arquivo
             {
-                switch (codigo_campo)
+
+                DADO=le_registro(arquivo);  //faz a leitura do registro no arquivo binario
+
+                if (DADO.removido == '2') // a variavel removido eh alterada para '2' dentro da funcao le registro se chegar no fim do arquivo
+                        break;
+
+                encadeamento++;         //aumenta o encadeamento (rrn)
+
+                if (DADO.removido == '0')//entra apenas se uma remocao puder ser feita
                 {
-                case 1:
-                    if (!strcmp(valorcampo,nome)){
-                        remove_dado_bin(nomearq,arquivo);
-                        regRemovidos++;
-                    }
-                    break;
+                    
+                    linha = strdup(DADO.variavel); // separa os campos de tamanho variado do dado em varias strrings
+                    nome = strsep(&linha, "#");
+                    especie = strsep(&linha, "#");
+                    habitat = strsep(&linha, "#");
+                    tipo = strsep(&linha, "#");
+                    dieta = strsep(&linha, "#");
+                    alimento = strsep(&linha, "#");
 
-                case 2:
-                    if (!strcmp(valorcampo,especie)){
-                        remove_dado_bin(nomearq,arquivo);
-                        regRemovidos++;
-                    }
-                    break;
+                    //ao encontrar um registro que deve ser removido dentro do switch case o seguinte ocorre:
+                    //o ponteiro de arquivo volta 160 bytes para que o registro possa ser removido, para isso a 
+                    //funcao removedadobin eh usada, ela reescreve o registro contendo apenas o status e o encadeamento(topo)
+                    //e o resto com $$$$$
+                    //depois disso o valor de topo eh atualizado para o valor do rrn do registro que foi removido 
+                    //por fim a contagem de registros removidos aumenta para a posterior atualizacao do cabecalho
+                    
+                    switch (codigo_campo)         //a depender do tipo de remocao escolhida o switch case age
+                    {
+                    case 1:
+                        if (!strcmp(valorcampo, nome))
+                        {
+                            fseek(arquivo, -160, SEEK_CUR);
+                            remove_dado_bin(arquivo, topo);
+                            topo = encadeamento;
+                            regRemovidos++;
+                        }
+                        break;
 
-                case 3:
-                    if (!strcmp(valorcampo,habitat)){
-                        remove_dado_bin(nomearq,arquivo);
-                        regRemovidos++;
-                    }
-                    break;
+                    case 2:
+                        if (!strcmp(valorcampo, especie))
+                        {
+                            fseek(arquivo, -160, SEEK_CUR);
+                            remove_dado_bin(arquivo, topo);
+                            topo = encadeamento;
+                            regRemovidos++;
+                        }
+                        break;
 
-                case 4:
-                    if (!strcmp(valorcampo,tipo)){
-                        remove_dado_bin(nomearq,arquivo);
-                        regRemovidos++;
-                    }
-                    break;
+                    case 3:
+                        if (!strcmp(valorcampo, habitat))
+                        {
+                            fseek(arquivo, -160, SEEK_CUR);
+                            remove_dado_bin(arquivo, topo);
+                            topo = encadeamento;
+                            regRemovidos++;
+                        }
+                        break;
 
-                case 5:
-                    if (!strcmp(valorcampo,dieta)){
-                        remove_dado_bin(nomearq,arquivo);
-                        regRemovidos++;
-                    }
-                    break;
+                    case 4:
+                        if (!strcmp(valorcampo, tipo))
+                        {
+                            fseek(arquivo, -160, SEEK_CUR);
+                            remove_dado_bin(arquivo, topo);
+                            topo = encadeamento;
+                            regRemovidos++;
+                        }
+                        break;
 
-                case 6:
-                    if (!strcmp(valorcampo,alimento)){
-                        remove_dado_bin(nomearq,arquivo);
-                        regRemovidos++;
-                    }
-                    break;
+                    case 5:
+                        if (!strcmp(valorcampo, dieta))
+                        {
+                            fseek(arquivo, -160, SEEK_CUR);
+                            remove_dado_bin(arquivo, topo);
+                            topo = encadeamento;
+                            regRemovidos++;
+                        }
+                        break;
 
-                case 7:
-                    if (valorcampo[0]==DADO.unidadeMedida){
-                        remove_dado_bin(nomearq,arquivo);
-                        regRemovidos++;
-                    }
-                    break;
+                    case 6:
+                        if (!strcmp(valorcampo, alimento))
+                        {
+                            fseek(arquivo, -160, SEEK_CUR);
+                            remove_dado_bin(arquivo, topo);
+                            topo = encadeamento;
+                            regRemovidos++;
+                        }
+                        break;
 
-                case 8:
-                    if (atoi(valorcampo)==DADO.velocidade){
-                        remove_dado_bin(nomearq,arquivo);
-                        regRemovidos++;
-                    }
-                    break;
+                    case 7:
+                        if (valorchar == DADO.unidadeMedida)
+                        {
+                            fseek(arquivo, -160, SEEK_CUR);
+                            remove_dado_bin(arquivo, topo);
+                            topo = encadeamento;
+                            regRemovidos++;
+                        }
+                        break;
 
-                case 9:
-                    if (fabs(atof(valorcampo)-DADO.tamanho)<0.001){
-                        remove_dado_bin(nomearq,arquivo);
-                        regRemovidos++;
-                    }
-                    break;
-                
-                default:
-                    break;
-                }//FIM DO SWITCH
+                    case 8:
+
+                        if (valorint == DADO.velocidade)
+                        {
+                            fseek(arquivo, -160, SEEK_CUR);
+                            remove_dado_bin(arquivo, topo);
+                            topo = encadeamento;
+                            regRemovidos++;
+                        }
+                        break;
+
+                    case 9:
+                        if (fabs(valorfloat - DADO.tamanho) < 0.001)
+                        {
+                            fseek(arquivo, -160, SEEK_CUR);
+                            remove_dado_bin(arquivo, topo);
+                            topo = encadeamento;
+                            regRemovidos++;
+                        }
+                        break;
+                    case 10:
+                        if (valorint == DADO.populacao)
+                        {
+                            fseek(arquivo, -160, SEEK_CUR);
+                            remove_dado_bin(arquivo, topo);
+                            topo = encadeamento;
+                            regRemovidos++;
+                        }
+                        break;
+                    default:
+                        break;
+                    } // FIM DO SWITCH
+                }
             }//FIM DO WHILE
-
-
-            
+            fclose(arquivo);//fecha o arquivo apos completar um ciclo inteiro de remocao
+        
         }//FIM DO FOR
+        
         CAB.nroRegRem=regRemovidos;
-        atualiza_cabecalho_bin(nomearq,CAB);
+        CAB.topo=topo;
+        CAB.status='1';
+
+        atualiza_cabecalho_bin(nomearq,CAB);//ATUALIZA O CABECALHO COM A NOVA QTD DE REGISTROS LOGICAMENTE REMOVIDOS E COM O RRN DE TOPO NOVO
+        binarioNaTela(nomearq);
     }
 
 }
 
-
-void compactacao(){
-    char nomearq[31];           //nome do arquivo que sera lido
-    dados DADO;                 //variavel de registro
-    cabecalho CAB;              //variavel do cabecalho
-
-    scanf("%s",nomearq);        //le o nome do arquivo que sera aberto
-    
-    FILE *arquivo;
-
-}

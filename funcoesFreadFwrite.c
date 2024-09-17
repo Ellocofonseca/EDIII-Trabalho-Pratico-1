@@ -88,17 +88,15 @@ void escreve_dado_bin(char nomebin[31],dados DADO){
 
 //a funcao atualiza um dado num determinado campo do arquivo binario, o ponteiro com a localizacao
 //de onde sera inserido o dado eh parametro da funcao
-void remove_dado_bin(char nomebin[31],FILE *arquivobin){
+void remove_dado_bin(FILE *arquivobin,int encadeamento){
     char lixo='$';
-    char remo='0';
+    char remo='1';
+    int i;
     fwrite(&remo, 1, 1, arquivobin);
-    fwrite(&lixo, 4, 1, arquivobin);
-    fwrite(&lixo, 4, 1, arquivobin);
-    fwrite(&lixo, 4, 1, arquivobin);
-    fwrite(&lixo, 1, 1, arquivobin);
-    fwrite(&lixo, 4, 1, arquivobin);
-    fwrite(&lixo, 142, 1, arquivobin);
-    fclose(arquivobin);
+    fwrite(&encadeamento, 4, 1, arquivobin);
+    for(i=0;i<155;i++)
+        fwrite(&lixo, 1, 1, arquivobin);
+
 }
 
 //a funcao atualiza um dado removendo ele logicamente e preenchendo o resto dos campos com o lixo "$"

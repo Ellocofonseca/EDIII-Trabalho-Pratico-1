@@ -18,7 +18,7 @@ void direcionaComando(int codigo){
         break;
 
     case 4:
-        //remocao_logica();
+        remocao_logica();
         break;
 
     case 5:
@@ -37,7 +37,7 @@ void direcionaComando(int codigo){
 //funcao que compara uma string dada com nomes de campos existentes, se a string dada nao for igual a nada retorna -1 
 
 int checa_nome_campo(char *string){
-
+    
     if (!strcmp(string, "nome"))
     {
         return 1;
@@ -73,6 +73,10 @@ int checa_nome_campo(char *string){
     if (!strcmp(string, "tamanho"))
     {
         return 9;
+    }
+    if (!strcmp(string, "populacao"))
+    {
+        return 10;
     }
     return -1;
 }
