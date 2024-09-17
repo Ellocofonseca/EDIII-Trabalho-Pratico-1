@@ -135,8 +135,10 @@ void csv_para_bin()
 }
 
 
-//para evitar o uso de diversos fseeks o arquivo é lido de forma reversa
+//lista encadeada que eh encadeada a partir da ordem de remocao. no arquivo 11 a primeira remocao ocorreu no rrn300 por ex (topo)
 void remocao_logica(){
+
+
     int nroRemocoes,regRemovidos;
     int i, codigo_campo;
     char nomearq[31];           //nome do arquivo que sera lido
@@ -267,5 +269,17 @@ void remocao_logica(){
         CAB.nroRegRem=regRemovidos;
         atualiza_cabecalho_bin(nomearq,CAB);
     }
+
+}
+
+
+void compactacao(){
+    char nomearq[31];           //nome do arquivo que sera lido
+    dados DADO;                 //variavel de registro
+    cabecalho CAB;              //variavel do cabecalho
+
+    scanf("%s",nomearq);        //le o nome do arquivo que sera aberto
+    
+    FILE *arquivo;
 
 }
