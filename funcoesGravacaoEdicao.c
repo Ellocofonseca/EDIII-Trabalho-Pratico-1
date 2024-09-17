@@ -27,7 +27,6 @@ void csv_para_bin()
     char *dieta;
     char *alimento;
     char var[142];
-    float tam;
 
     scanf("%s",nomecsv);
     scanf("%s",nomebin);
@@ -58,7 +57,7 @@ void csv_para_bin()
 
             habitat = strsep(&linha, ",");
 
-            token = strsep(&linha, ",");      //populacao
+            token = strsep(&linha, ",");        //populacao
             REGISTRO.populacao=atoi(token);
             if (REGISTRO.populacao==0)          //se o campo estiver vazio coloca o valor invalido -1
                 REGISTRO.populacao=-1;
