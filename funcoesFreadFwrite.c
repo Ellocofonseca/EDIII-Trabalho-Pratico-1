@@ -17,9 +17,11 @@ cabecalho le_cabecalho(FILE *arquivo){
     fread(&CAB.qttCompacta,4,1,arquivo);
     return CAB;
 }
+
 //a funcao le os campos de dados do arquivo a partir da posicao que o ponteiro se encontra no momento
 //caso o arquivo acabe o campo 'removido' da variavel DADO eh usado como flag para informar que o arquivo acabou
 //retorna a variavel do tipo dados
+//essa tatica com a flag impede que um arquivo que acaba do nada tenha seu dado incompleto inserido
 dados le_registro(FILE *arquivo){
 
     dados DADO;
@@ -28,11 +30,26 @@ dados le_registro(FILE *arquivo){
         DADO.removido='2';
         return DADO;
     }
-    fread(&DADO.encadeamento,4,1,arquivo);
-    fread(&DADO.populacao,4,1,arquivo);
-    fread(&DADO.tamanho,4,1,arquivo);
-    fread(&DADO.unidadeMedida,1,1,arquivo);
-    fread(&DADO.velocidade,4,1,arquivo);
+    if(fread(&DADO.encadeamento,4,1,arquivo)==0){
+        DADO.removido='2';
+        return DADO;
+    }
+    if(fread(&DADO.populacao,4,1,arquivo)==0){
+        DADO.removido='2';
+        return DADO;
+    }
+    if(fread(&DADO.tamanho,4,1,arquivo)==0){
+        DADO.removido='2';
+        return DADO;
+    }
+    if(fread(&DADO.unidadeMedida,1,1,arquivo)==0){
+        DADO.removido='2';
+        return DADO;
+    }
+    if(fread(&DADO.velocidade,4,1,arquivo)==0){
+        DADO.removido='2';
+        return DADO;
+    }
     if(fread(DADO.variavel,142,1,arquivo)==0){
         DADO.removido='2';
         return DADO;

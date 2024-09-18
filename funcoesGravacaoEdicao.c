@@ -355,7 +355,10 @@ void remocao_logica(){
 
 }
 
-
+//o compactador quando chamado recebe o nome de um aquivo binario
+//esse arquivo eh aberto em modo leitura e seus registros logicamente nao removidos
+//e cabecalho sao copiados para um outro arquivo que eh aberto em modo append
+//apos o fim do processo o arquivo antigo eh deletado e o novo recebe o nome do antigo
 void compactador()
 {
     int insercoes;  // variavel de proxRRN do arquivo compactado
