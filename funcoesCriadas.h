@@ -15,7 +15,7 @@
 
 
 // CADA PAGINA DE DISCO POSSUI 1600 BYTES
-//REGISTRO DE CABECALHO, 21 BYTES + lixo = 1600 bytes
+// REGISTRO DE CABECALHO, 21 BYTES + lixo = 1600 bytes
 typedef struct
 {
     char status;                // Indicacao da consistencia do arq. de dados, se for 1 esta consistente e se for 0 nao     1 byte
@@ -35,7 +35,7 @@ typedef struct
     int encadeamento;           //  Armazena o RRN do proximo registro logicamente removido           4 bytes
     int populacao;              //  Qtd de individuos da especie que viviam em determinado lugar      4 bytes
     float tamanho;              //  Tamanho do individuo                                              4 bytes
-    char unidadeMedida;         //  Unidade de medida da velocidade do individuo                   1 byte
+    char unidadeMedida;         //  Unidade de medida da velocidade do individuo                      1 byte
     int velocidade;             //  Velocidade do individuo                                           4 bytes
 
     char variavel[142];         //  Bytes variaveis                                                   142 bytes
@@ -60,9 +60,9 @@ dados le_registro(FILE *arquivo);                               //FUNCAO QUE LE 
 void exibe_registro(dados DADO);
 
 //FUNCOES DE GRAVACAO/EDICAO
-void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB);             //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE NUM ARQUIVO BIN
-void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB);            //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ATUALIZA O BIN
-void escreve_dado_bin(char nomebin[31],dados DADO);                     //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
+void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB);                 //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE NUM ARQUIVO BIN
+void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB);                //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ATUALIZA O BIN
+void escreve_dado_bin(char nomebin[31],dados DADO);                         //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
 //void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin)    //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ATUALIZA O BIN
 void remove_dado_bin(FILE *arquivobin,int encademento);
 
@@ -72,6 +72,6 @@ void exibe_campos();            //COMANDO 2 -> GERA UM RELATORIO QUE IMPRIME NO 
 void busca_determinada();       //COMANDO 3 -> GERA UM RELATORIO QUE IMPRIME NO TERMINAL AS INFORMACOES DE ESPECIES QUE POSSUIREM PARAMETROS IGUAIS AOS DE PESQUISA 
 void remocao_logica();          //COMANDO 4 -> REALIZA A REMOCAO LOGICA DE DADOS ESPECIFICADOS
 
-void compactacao();             //COMANDO 6 -> COMPACTA O ARQUIVO REESCREVENDO ELE SEM OS REGISTROS LOGICAMENTE REMOVIDOS
+void compactador();             //COMANDO 6 -> COMPACTA O ARQUIVO REESCREVENDO ELE SEM OS REGISTROS LOGICAMENTE REMOVIDOS
 
 #endif // __FUNCOES__

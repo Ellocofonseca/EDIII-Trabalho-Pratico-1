@@ -355,3 +355,69 @@ void remocao_logica(){
 
 }
 
+
+
+
+void compactador()
+{
+    int insercoes;  // variavel de proxRRN do arquivo compactado
+    dados DADO;     // variavel de registro
+    cabecalho CAB;  // variavel de cabecalho
+
+    char nomebin[31]; // nome do arquivo bin que sera compactado
+    char compactado[31]="compactado.bin";
+
+    FILE *arqoriginal;   // ponteiro do arquivo original que sera aberto em modo leitura
+    FILE *arqcompactado; // ponteiro do arquivo comapctado que sera aberto em modo escrita
+
+    scanf("%s", nomebin); // scanf do nome do arquivo que sera compactado
+
+    if (arqoriginal = fopen(nomebin, "rb"))// abre o arquivo checando se foi devidamente aberto em modo leitura binaria   
+    {
+        printf(ERRO_PADRAO);
+    }
+    else
+    {
+
+        CAB = le_cabecalho(arqoriginal);        //le o cabecalho do arquivo original
+        fseek(arqoriginal, 1600, SEEK_SET);     //ajusta o ponteiro do arquivo original para ler os registros
+
+        CAB.status = '0';                       //status 0 do cabecalho
+        escreve_cabecalho_bin(compactado, CAB); //escreve o cabecalho novo do arquivoi
+
+        while (1)
+        {
+            DADO = le_registro(arqoriginal); // faz a leitura do registro do arquivo original
+
+            if (DADO.removido == '2') // a variavel removido eh alterada para '2' dentro da funcao le registro se chegar no fim do arquivo
+                break;
+
+            if (DADO.removido == '0'){ // insere o registro no arquivo compactado se ele nao estiver removido
+                escreve_dado_bin(compactado, DADO);
+                insercoes++;
+            }
+        }
+        fclose(arqoriginal); // fecha o arquivo original que estava aberto em modo leitura binaria
+
+        // atualiza o cabecalho apos todo o processo
+        CAB.status = '1';
+        CAB.qttCompacta++;
+        CAB.nroRegRem = 0;
+        CAB.topo = -1;
+        CAB.proxRRN = insercoes;
+
+        CAB.nroPagDisco = (1 + (insercoes / 10));
+        if (CAB.nroPagDisco * 10 < insercoes + 10)
+        {
+            CAB.nroPagDisco++;
+        }
+
+        atualiza_cabecalho_bin(compactado, CAB);
+
+        // remove o arquivo antigo e renomeia o arquivo compactado com o nome do antigo
+        remove(nomebin);
+        rename("compactado.bin", nomebin);
+
+        binarioNaTela(nomebin);
+    }
+}
