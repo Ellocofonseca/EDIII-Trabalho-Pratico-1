@@ -42,7 +42,7 @@ void exibe_campos()
                 exibe_registro(DADO); // exibe o registro apos salvar os campos, APENAS SE A FLAG REMOVIDO FOR '0'
         }
         fclose(arquivo); // fecha o arquivo
-        printf("Numero de paginas de disco: %d\n", CAB.nroPagDisco);
+        printf("Numero de paginas de disco: %d\n\n", CAB.nroPagDisco);
     }
 }
 
@@ -215,7 +215,12 @@ void busca_determinada()
                             regEncontrados++;
                         }
                         break;
-
+                    case 10:
+                        if (valorint == DADO.populacao)
+                        {
+                            exibe_registro(DADO);
+                            regEncontrados++;
+                        }
                     default:
                         break;
                     }
@@ -230,7 +235,8 @@ void busca_determinada()
                 printf("\n");
             }
 
-            printf("Numero de paginas de disco: %d\n\n", CAB.nroPagDisco);
+            printf("Numero de paginas de disco: %d", CAB.nroPagDisco);
+            printf("\n\n");
         }
     }
 }
@@ -261,6 +267,7 @@ void exibe_registro(dados DADO)
 
         // print dos dados das criaturas, se nao constar nao eh exibido
 
+
         printf("Nome: %s\n", nome);
 
         if (strcmp(especie, ""))
@@ -279,6 +286,8 @@ void exibe_registro(dados DADO)
             printf("Tamanho: %.1f m\n", DADO.tamanho);
 
         if (DADO.velocidade > 0)
-            printf("Velocidade: %d %cm/h\n\n", DADO.velocidade, DADO.unidadeMedida);
+            printf("Velocidade: %d %cm/h\n", DADO.velocidade, DADO.unidadeMedida);
+
+        printf("\n");
     }
 }

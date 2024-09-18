@@ -356,8 +356,6 @@ void remocao_logica(){
 }
 
 
-
-
 void compactador()
 {
     int insercoes;  // variavel de proxRRN do arquivo compactado
@@ -372,7 +370,8 @@ void compactador()
 
     scanf("%s", nomebin); // scanf do nome do arquivo que sera compactado
 
-    if (arqoriginal = fopen(nomebin, "rb"))// abre o arquivo checando se foi devidamente aberto em modo leitura binaria   
+    arqoriginal = fopen(nomebin, "rb");
+    if (arqoriginal == NULL)// abre o arquivo checando se foi devidamente aberto em modo leitura binaria   
     {
         printf(ERRO_PADRAO);
     }
@@ -393,6 +392,7 @@ void compactador()
                 break;
 
             if (DADO.removido == '0'){ // insere o registro no arquivo compactado se ele nao estiver removido
+                DADO.encadeamento=-1;
                 escreve_dado_bin(compactado, DADO);
                 insercoes++;
             }

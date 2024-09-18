@@ -25,6 +25,7 @@ void direcionaComando(int codigo){
         break;
 
     case 6:
+        compactador();
         break;
 
     default:
