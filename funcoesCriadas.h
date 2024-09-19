@@ -48,30 +48,30 @@ typedef struct
 
 //--------FUNCOES-DO-PROGRAMA------------
 
-//FUNCOES PADRAO, REDIRECIONAMENTO, COMPARACAO
+//FUNCOES PADRAO, REDIRECIONAMENTO, COMPARACAO, TECLADO
 void direcionaComando(int codigo);                              //FUNCAO DE SELECAO DE FUNCAO DE ACORDO COM O COMANDO
 int checa_nome_campo(char *string);                             //FUNCAO QUE RETORNA UM INTEIRO DE ACORDO COM O NOME DE UM CAMPO ESCRITO
+dados le_do_teclado();                                          //FUNCAO QUE LE DADOS PARA SEREM INSERIDOS EM UM ARQUIVO EXISTENTE DO TECLADOS
 
-//FUNCOES DE LEITURA
-cabecalho le_cabecalho(FILE *arquivo);                          //FUNCAO QUE LE A PORCAO INICIAL DO CABECALHO DE UM ARQUIVO BIN
-dados le_registro(FILE *arquivo);                               //FUNCAO QUE LE UM DOS VARIOS DADOS
+//FUNCAO DE PRINTF
+void exibe_registro(dados DADO);                                //FUNCAO QUE PRINTA NA TELA UM REGISTRO 
 
-//FUNCOES DE RELATORIO/PRINT
-void exibe_registro(dados DADO);
-
-//FUNCOES DE GRAVACAO/EDICAO
+//FUNCOES DE FREAD DE ARQUIVO BINARIO
+cabecalho le_cabecalho(FILE *arquivo);                                      //FUNCAO QUE LE A PORCAO INICIAL DO CABECALHO DE UM ARQUIVO BIN
+dados le_registro(FILE *arquivo);                                           //FUNCAO QUE LE UM DOS VARIOS DADOS
+//FUNCOES DE FWRITE EM ARQUIVO BINARIO
 void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB);                 //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ESCREVE NUM ARQUIVO BIN
 void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB);                //FUNCAO QUE PEGA UM REGISTRO DO TIPO cabecalho E ATUALIZA O BIN
-void escreve_dado_bin(char nomebin[31],dados DADO);                         //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NUM ARQUIVO BIN
-//void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin)    //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ATUALIZA O BIN
-void remove_dado_bin(FILE *arquivobin,int encademento);
+void escreve_dado_bin(char nomebin[31],dados DADO);                         //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ESCREVE NO FIM DO ARQUIVO
+void atualiza_dado_bin(dados DADO,FILE *arquivobin);                        //FUNCAO QUE PEGA UM REGISTRO DO TIPO dados E ATUALIZA O BIN, PODENDO SOBRESCREVER UM REGISTRO LOGICAMENTE REMOVIDO
+void remove_dado_bin(FILE *arquivobin,int encademento);                     //FUNCAO QUE REALIZA A REMOCAO LOGICA DE UM REGISTRO
 
 //FUNCOES DE CADA COMANDO EM ORDEM
 void csv_para_bin();            //COMANDO 1 -> LE DE UM ARQUIVO CVS E ARMAZENA SUAS INFORMACOES NUM ARQUIVO BINARIO 
 void exibe_campos();            //COMANDO 2 -> GERA UM RELATORIO QUE IMPRIME NO TERMINAL AS INFORMACOES DE TODAS AS ESPECIES NAO REMOVIDAS DE UM ARQUIVO BIN
 void busca_determinada();       //COMANDO 3 -> GERA UM RELATORIO QUE IMPRIME NO TERMINAL AS INFORMACOES DE ESPECIES QUE POSSUIREM PARAMETROS IGUAIS AOS DE PESQUISA 
 void remocao_logica();          //COMANDO 4 -> REALIZA A REMOCAO LOGICA DE DADOS ESPECIFICADOS
-
+void insere_registro();         //COMANDO 5 -> REALIZA A INSERCAO DE UM DADO NOVO NO ARQUIVO BIN APOS LER DADOS DO TECLADO, AS INSERCOES PRIMEIRO SAO FEITAS NA PILHA DE REMOCAO E DEPOIS AO FIM DO ARQUIVO CASO NAO HAJA REGISTROS LOGICAMENTE REMOVIDOS
 void compactador();             //COMANDO 6 -> COMPACTA O ARQUIVO REESCREVENDO ELE SEM OS REGISTROS LOGICAMENTE REMOVIDOS
 
 #endif // __FUNCOES__

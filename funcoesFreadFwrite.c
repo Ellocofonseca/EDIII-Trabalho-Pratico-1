@@ -117,7 +117,7 @@ void remove_dado_bin(FILE *arquivobin,int encadeamento){
 }
 
 //a funcao atualiza um dado removendo ele logicamente e preenchendo o resto dos campos com o lixo "$"
-void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin){
+void atualiza_dado_bin(dados DADO,FILE *arquivobin){
 
     fwrite(&DADO.removido, 1, 1, arquivobin);
     fwrite(&DADO.encadeamento, 4, 1, arquivobin);
@@ -126,6 +126,5 @@ void atualiza_dado_bin(char nomebin[31],dados DADO,FILE *arquivobin){
     fwrite(&DADO.unidadeMedida, 1, 1, arquivobin);
     fwrite(&DADO.velocidade, 4, 1, arquivobin);
     fwrite(DADO.variavel, 142, 1, arquivobin);
-    fclose(arquivobin);
 }
 

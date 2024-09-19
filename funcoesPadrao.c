@@ -1,9 +1,12 @@
 #include "./funcoesCriadas.h"
+#include "./funcoes_fornecidas.h"
 
-//funcao que direciona o codigo para cada funcao de acordo com o numero selecionado
+// funcao que direciona o codigo para cada funcao de acordo com o numero selecionado
 
-void direcionaComando(int codigo){
-    switch (codigo){
+void direcionaComando(int codigo)
+{
+    switch (codigo)
+    {
 
     case 1:
         csv_para_bin();
@@ -22,6 +25,7 @@ void direcionaComando(int codigo){
         break;
 
     case 5:
+        insere_registro();
         break;
 
     case 6:
@@ -29,16 +33,16 @@ void direcionaComando(int codigo){
         break;
 
     default:
-        printf(ERRO_COMANDO);    //PRINT DA MENSAGEM PADRAO DE ERRO CASO O USUARIO DIGITE UM COMANDO INEXISTENTE
+        printf(ERRO_COMANDO); // PRINT DA MENSAGEM PADRAO DE ERRO CASO O USUARIO DIGITE UM COMANDO INEXISTENTE
         break;
     }
-
 }
 
-//funcao que compara uma string dada com nomes de campos existentes, se a string dada nao for igual a nada retorna -1 
+// funcao que compara uma string dada com nomes de campos existentes, se a string dada nao for igual a nada retorna -1
 
-int checa_nome_campo(char *string){
-    
+int checa_nome_campo(char *string)
+{
+
     if (!strcmp(string, "nome"))
     {
         return 1;
@@ -80,4 +84,127 @@ int checa_nome_campo(char *string){
         return 10;
     }
     return -1;
+}
+// funcao utilizada no comando 5 que le do teclado dados de um registro que sera inserido num arquivo binario
+// caso os campos de insercao recebam a string NULO o dado recebe um valor invalido padrao
+//  -1 para int e float, $ para char e "" para string
+dados le_do_teclado()
+{
+    // nome, dieta, habitat, populacao, tipo, velocidade, medidaVelocidade, tamanho, especie, alimento.
+    dados DADO;
+    int j;
+    // strings que formarao o campo de tamanho variavel do registro de especie
+    char limitador[2] = "#";
+    char nome[31];
+    char especie[31];
+    char habitat[31];
+    char tipo[31];
+    char dieta[31];
+    char alimento[31];
+
+    char populacao[31];
+    char velocidade[31];
+    char medVelocidade[21];
+    char tamanho[31];
+    char var[142];
+
+    // leitura e modificacao dos campos do registro
+    scan_quote_string(nome);
+    scan_quote_string(dieta);
+    scan_quote_string(habitat);
+    scan_quote_string(populacao);
+    scan_quote_string(tipo);
+    scan_quote_string(velocidade);
+    scan_quote_string(medVelocidade);
+    scan_quote_string(tamanho);
+    scan_quote_string(especie);
+    scan_quote_string(alimento);
+
+    //STRING
+    if (!strcmp(nome, ""))
+    {
+        nome[0] = '\0';
+    }
+    if (!strcmp(dieta, ""))
+    {
+        dieta[0] = '\0';
+    }
+    if (!strcmp(habitat, ""))
+    {
+        habitat[0] = '\0';
+    }
+    if (!strcmp(tipo, ""))
+    {
+        tipo[0] = '\0';
+    }
+    if (!strcmp(especie, ""))
+    {
+        especie[0] = '\0';
+    }
+    if (!strcmp(alimento, ""))
+    {
+        alimento[0] = '\0';
+    }
+
+    //INT CHAR FLOAT
+    if (!strcmp(populacao, ""))
+    {
+        DADO.populacao = -1;
+    }
+    else
+    {
+        DADO.populacao = atoi(populacao);
+    }
+
+    if (!strcmp(tamanho, ""))
+    {
+        DADO.tamanho = -1;
+    }
+    else
+    {
+        DADO.tamanho = atof(tamanho);
+    }
+
+    if (!strcmp(velocidade, ""))
+    {
+        DADO.velocidade = -1;
+    }
+    else
+    {
+        DADO.velocidade = atoi(velocidade);
+    }
+
+    if (!strcmp(medVelocidade, ""))
+    {
+        DADO.unidadeMedida = '$';
+    }
+    else
+    {
+        DADO.unidadeMedida = medVelocidade[0];
+    }
+
+    DADO.encadeamento = -1;
+    DADO.removido = '0';
+
+    // montagem do campo de tamanho variavel
+    var[0] = '\0';
+    strcat(var, nome);
+    strcat(var, limitador);
+    strcat(var, especie);
+    strcat(var, limitador);
+    strcat(var, habitat);
+    strcat(var, limitador);
+    strcat(var, tipo);
+    strcat(var, limitador);
+    strcat(var, dieta);
+    strcat(var, limitador);
+    strcat(var, alimento);
+    strcat(var, limitador);
+
+    for (j = strlen(var); j < 142; j++) // coloca o cifrao no lugar dos espacos em branco
+        var[j] = '$';
+
+    strcpy(DADO.variavel, var); // coloca a string montada na variavel de registro
+
+    return DADO;
 }

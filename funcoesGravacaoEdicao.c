@@ -4,7 +4,6 @@
 
 //funcao que abre um arquivo csv para realizar a leitura dos dados dele para que esses dados sejam salvos
 //em um arquivo binario em formato especificado alem de seu cabecalho que tambem eh salvo
-
 void csv_para_bin()
 {
     int i,j;                    //variavel auxiliar
@@ -355,6 +354,91 @@ void remocao_logica(){
 
 }
 
+//a funcao a seguir insere registros novos a um arquivo bin ja existente, para fazer isso
+//a funcao sobrescreve os dados na ordem da pilha de remocao caso existam arquivos removidos
+//se nao houverem arquivos logicamente removidos a insercao e feita de forma normal ao fim
+//do arquivo
+void insere_registro()
+{
+
+    int topo;         // variavel de proxRRN do arquivo compactado
+    int nroInsercoes; // variavel do nro de insercoes que serao feitas no arquivo
+    int RRNFinal;     // valor do ultimo rrn do arquivo
+    int i;            // auxiliar
+    dados DADO;       // variavel de registro
+    cabecalho CAB;    // variavel de cabecalho
+
+    char nomebin[31]; // nome do arquivo bin que sera compactado
+    char compactado[31] = "compactado.bin";
+
+    FILE *arquivo; // ponteiro do arquivo que sera aberto em modo rb+ para que as modificacoes possam ser feitas
+
+    scanf("%s", nomebin); // scanf do nome do arquivo que sera compactado
+
+    arquivo = fopen(nomebin, "rb+");
+    if (arquivo == NULL) // abre o arquivo checando se foi devidamente aberto em modo rb+
+    {
+        printf(ERRO_PADRAO);
+    }
+    else
+    { // le o cabecalho do arquivo e ajusta o ponteiro para ler os dados em seguida
+        CAB = le_cabecalho(arquivo);
+        fseek(arquivo, 1600, SEEK_SET);
+
+        topo = CAB.topo;        // guarda o valor de topo da pilha para remocao
+        RRNFinal = CAB.proxRRN; // guarda o valor da qtd de dados
+
+        scanf("%d", &nroInsercoes); // quantidade de dados que serao inseridos
+
+        
+        for (i = 0; i < nroInsercoes; i++)
+        {
+            
+
+            //HORA DA INSERCAO DO DADO
+            if (topo == -1)
+            {
+                fclose(arquivo); // fecha o arquivo para abrir em modo append
+                DADO=le_do_teclado();
+                // abre o arquivo para escrever no fim dele caso nao tenham remocoes no arquivo
+                escreve_dado_bin(nomebin, DADO); // escreve no fim do arquivo
+
+                RRNFinal++;                      // posicao do ultimo rrn do arquivo eh atualizada
+                arquivo = fopen(nomebin, "rb+"); // abre o arquivo de novo em modo rb+ para pesquisar e editar o arquivo
+            }
+            else
+            {
+
+                fseek(arquivo, 1600 + (160 * topo), SEEK_SET); // fseek na posicao com remocao
+                DADO = le_registro(arquivo);                   // le a posicao para armazenar o valor de topo
+                topo = DADO.encadeamento;                      // armazena o valor de topo novo
+                DADO=le_do_teclado();
+                fseek(arquivo, -160, SEEK_CUR);   // volta o ponteiro para realizar a insercao
+                atualiza_dado_bin(DADO, arquivo); // escreve a nova informacao por cima do local onde havia uma remocao
+            }
+        }
+        fclose(arquivo);
+
+        // ATUALIZA AS INFORMACOES DO CABECALHO
+        CAB.nroRegRem -= nroInsercoes;
+        if (CAB.nroRegRem < 0)
+            CAB.nroRegRem = 0;
+
+        CAB.status = '1';
+
+        CAB.proxRRN = RRNFinal;
+
+        CAB.nroPagDisco = (1 + (RRNFinal / 10));
+        if (CAB.nroPagDisco * 10 < RRNFinal + 10)
+            CAB.nroPagDisco++;
+
+        CAB.topo = topo;
+
+        atualiza_cabecalho_bin(nomebin, CAB);
+    }
+    binarioNaTela(nomebin);
+}
+
 //o compactador quando chamado recebe o nome de um aquivo binario
 //esse arquivo eh aberto em modo leitura e seus registros logicamente nao removidos
 //e cabecalho sao copiados para um outro arquivo que eh aberto em modo append
@@ -424,3 +508,4 @@ void compactador()
         binarioNaTela(nomebin);
     }
 }
+
