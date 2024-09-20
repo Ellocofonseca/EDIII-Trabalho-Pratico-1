@@ -5,7 +5,6 @@
  * @note    Trabalho de ED3, quarto periodo, USP Sao Carlos
  *******************************************************************/
 #include "./funcoesCriadas.h"
-#include "./funcoes_fornecidas.h"
 
 int main(){
 

@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <ctype.h>
 
 //------MENSAGENS-DE-ERRO-----
 #define ERRO_PADRAO     "Falha no processamento do arquivo\n" //mensagem padrao de erro
@@ -73,5 +74,17 @@ void busca_determinada();       //COMANDO 3 -> GERA UM RELATORIO QUE IMPRIME NO 
 void remocao_logica();          //COMANDO 4 -> REALIZA A REMOCAO LOGICA DE DADOS ESPECIFICADOS
 void insere_registro();         //COMANDO 5 -> REALIZA A INSERCAO DE UM DADO NOVO NO ARQUIVO BIN APOS LER DADOS DO TECLADO, AS INSERCOES PRIMEIRO SAO FEITAS NA PILHA DE REMOCAO E DEPOIS AO FIM DO ARQUIVO CASO NAO HAJA REGISTROS LOGICAMENTE REMOVIDOS
 void compactador();             //COMANDO 6 -> COMPACTA O ARQUIVO REESCREVENDO ELE SEM OS REGISTROS LOGICAMENTE REMOVIDOS
+
+//FUNCOES FORNECIDAS
+void scan_quote_string(char *str);
+
+/**
+ * Use essa função para comparação no run.codes.
+ * Lembre-se de ter fechado (fclose) o arquivo anteriormente.
+ *
+ * Ela vai abrir de novo para leitura e depois fechar
+ * (você não vai perder pontos por isso se usar ela).
+ */
+void binarioNaTela(char *nomeArquivoBinario);
 
 #endif // __FUNCOES__

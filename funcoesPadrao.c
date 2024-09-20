@@ -1,5 +1,4 @@
 #include "./funcoesCriadas.h"
-#include "./funcoes_fornecidas.h"
 
 // funcao que direciona o codigo para cada funcao de acordo com o numero selecionado
 
@@ -33,15 +32,14 @@ void direcionaComando(int codigo)
         break;
 
     default:
-        printf(ERRO_COMANDO); // PRINT DA MENSAGEM PADRAO DE ERRO CASO O USUARIO DIGITE UM COMANDO INEXISTENTE
+        printf(ERRO_PADRAO); // PRINT DA MENSAGEM PADRAO DE ERRO CASO O USUARIO DIGITE UM COMANDO INEXISTENTE
         break;
     }
 }
 
 // funcao que compara uma string dada com nomes de campos existentes, se a string dada nao for igual a nada retorna -1
 
-int checa_nome_campo(char *string)
-{
+int checa_nome_campo(char *string){
 
     if (!strcmp(string, "nome"))
     {

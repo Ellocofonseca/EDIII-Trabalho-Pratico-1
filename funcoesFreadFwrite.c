@@ -1,5 +1,4 @@
 #include "./funcoesCriadas.h"
-#include "./funcoes_fornecidas.h"
 
 
 //FUNCOES DE ARQUIVO BINARIO
