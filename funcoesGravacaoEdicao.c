@@ -168,7 +168,7 @@ void remocao_logica()
         CAB = le_cabecalho(arquivo); // le o cabecalho e checa se ele esta ok
         if (CAB.status == '0')
         { // se o status n estiver OK nao faz nada no arquivo e fecha ele
-            printf(ERRO_REGISTRO);
+            printf(ERRO_PADRAO);
             fclose(arquivo);
         }
         else
