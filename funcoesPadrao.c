@@ -39,7 +39,8 @@ void direcionaComando(int codigo)
 
 // funcao que compara uma string dada com nomes de campos existentes, se a string dada nao for igual a nada retorna -1
 
-int checa_nome_campo(char *string){
+int checa_nome_campo(char *string)
+{
 
     if (!strcmp(string, "nome"))
     {
@@ -93,12 +94,12 @@ dados le_do_teclado()
     int j;
     // strings que formarao o campo de tamanho variavel do registro de especie
     char limitador[2] = "#";
-    char nome[31];
-    char especie[31];
-    char habitat[31];
-    char tipo[31];
-    char dieta[31];
-    char alimento[31];
+    char nome[41];
+    char especie[41];
+    char habitat[41];
+    char tipo[41];
+    char dieta[41];
+    char alimento[41];
 
     char populacao[31];
     char velocidade[31];
@@ -118,98 +119,101 @@ dados le_do_teclado()
     scan_quote_string(especie);
     scan_quote_string(alimento);
 
-    if((strlen(nome)+strlen(dieta)+strlen(habitat)+strlen(especie)+strlen(tipo)+strlen(alimento)+6)>142){
-        DADO.removido=='3'; //INDICA QUE O USUARIO FOI MENINO NOVO E COLOCOU MUITOS CARATERES PARA ENTRAR NO CAMPO DE TAMANHO VARIAVEL
-                            //OU EM OUTRO CAMPO
-        
-        printf(ERRO_PADRAO" (Muitos caracteres no campo variavel)");
-    }else{
+    if ((strlen(nome) + strlen(dieta) + strlen(habitat) + strlen(especie) + strlen(tipo) + strlen(alimento) + 6) > 142)
+    {
+        DADO.removido == '3'; // INDICA QUE O USUARIO FOI MENINO NOVO E COLOCOU MUITOS CARATERES PARA ENTRAR NO CAMPO DE TAMANHO VARIAVEL
+                              // OU EM OUTRO CAMPO
 
-    //STRING
-    if (!strcmp(nome, ""))
-    {
-        nome[0] = '\0';
-    }
-    if (!strcmp(dieta, ""))
-    {
-        dieta[0] = '\0';
-    }
-    if (!strcmp(habitat, ""))
-    {
-        habitat[0] = '\0';
-    }
-    if (!strcmp(tipo, ""))
-    {
-        tipo[0] = '\0';
-    }
-    if (!strcmp(especie, ""))
-    {
-        especie[0] = '\0';
-    }
-    if (!strcmp(alimento, ""))
-    {
-        alimento[0] = '\0';
-    }
-
-    //INT CHAR FLOAT
-    if (!strcmp(populacao, ""))
-    {
-        DADO.populacao = -1;
+        printf(ERRO_PADRAO " (Muitos caracteres no campo variavel)");
     }
     else
     {
-        DADO.populacao = atoi(populacao);
-    }
 
-    if (!strcmp(tamanho, ""))
-    {
-        DADO.tamanho = -1;
-    }
-    else
-    {
-        DADO.tamanho = atof(tamanho);
-    }
+        // STRING
+        if (!strcmp(nome, ""))
+        {
+            nome[0] = '\0';
+        }
+        if (!strcmp(dieta, ""))
+        {
+            dieta[0] = '\0';
+        }
+        if (!strcmp(habitat, ""))
+        {
+            habitat[0] = '\0';
+        }
+        if (!strcmp(tipo, ""))
+        {
+            tipo[0] = '\0';
+        }
+        if (!strcmp(especie, ""))
+        {
+            especie[0] = '\0';
+        }
+        if (!strcmp(alimento, ""))
+        {
+            alimento[0] = '\0';
+        }
 
-    if (!strcmp(velocidade, ""))
-    {
-        DADO.velocidade = -1;
-    }
-    else
-    {
-        DADO.velocidade = atoi(velocidade);
-    }
+        // INT CHAR FLOAT
+        if (!strcmp(populacao, ""))
+        {
+            DADO.populacao = -1;
+        }
+        else
+        {
+            DADO.populacao = atoi(populacao);
+        }
 
-    if (!strcmp(medVelocidade, ""))
-    {
-        DADO.unidadeMedida = '$';
-    }
-    else
-    {
-        DADO.unidadeMedida = medVelocidade[0];
-    }
+        if (!strcmp(tamanho, ""))
+        {
+            DADO.tamanho = -1;
+        }
+        else
+        {
+            DADO.tamanho = atof(tamanho);
+        }
 
-    DADO.encadeamento = -1;
-    DADO.removido = '0';
+        if (!strcmp(velocidade, ""))
+        {
+            DADO.velocidade = -1;
+        }
+        else
+        {
+            DADO.velocidade = atoi(velocidade);
+        }
 
-    // montagem do campo de tamanho variavel
-    var[0] = '\0';
-    strcat(var, nome);
-    strcat(var, limitador);
-    strcat(var, especie);
-    strcat(var, limitador);
-    strcat(var, habitat);
-    strcat(var, limitador);
-    strcat(var, tipo);
-    strcat(var, limitador);
-    strcat(var, dieta);
-    strcat(var, limitador);
-    strcat(var, alimento);
-    strcat(var, limitador);
+        if (!strcmp(medVelocidade, ""))
+        {
+            DADO.unidadeMedida = '$';
+        }
+        else
+        {
+            DADO.unidadeMedida = medVelocidade[0];
+        }
 
-    for (j = strlen(var); j < 142; j++) // coloca o cifrao no lugar dos espacos em branco
-        var[j] = '$';
+        DADO.encadeamento = -1;
+        DADO.removido = '0';
 
-    strcpy(DADO.variavel, var); // coloca a string montada na variavel de registro
+        // montagem do campo de tamanho variavel
+        var[0] = '\0';
+        strcat(var, nome);
+        strcat(var, limitador);
+        strcat(var, especie);
+        strcat(var, limitador);
+        strcat(var, habitat);
+        strcat(var, limitador);
+        strcat(var, tipo);
+        strcat(var, limitador);
+        strcat(var, dieta);
+        strcat(var, limitador);
+        strcat(var, alimento);
+        strcat(var, limitador);
+
+        for (j = strlen(var); j < 142; j++) // coloca o cifrao no lugar dos espacos em branco
+            var[j] = '$';
+
+        strcpy(DADO.variavel, var); // coloca a string montada na variavel de registro
     }
     return DADO;
 }

@@ -373,7 +373,7 @@ void remocao_logica()
 void insere_registro()
 {
 
-    int topo;         // variavel de proxRRN do arquivo compactado
+    int topo,aux;     // variavel do endereco do topo da pilha de remocao e seu auxiliar que deixa salvo o topo anterior
     int nroInsercoes; // variavel do nro de insercoes que serao feitas no arquivo
     int RRNFinal;     // valor do ultimo rrn do arquivo
     int i;            // auxiliar
@@ -417,11 +417,15 @@ void insere_registro()
                 if (topo == -1)
                 {
                     fclose(arquivo); // fecha o arquivo para abrir em modo append
-                    DADO = le_do_teclado();
-                    // abre o arquivo para escrever no fim dele caso nao tenham remocoes no arquivo
-                    escreve_dado_bin(nomebin, DADO); // escreve no fim do arquivo
 
+                    DADO = le_do_teclado();//le os dados que serao inseridos
+
+                    if (DADO.removido!='3')// DADO.removido usado como flag, se houver uma inconsistencia na leitura de dados eles nao sao inseridos
+                    {
+                    escreve_dado_bin(nomebin, DADO); // escreve no fim do arquivo
                     RRNFinal++;                      // posicao do ultimo rrn do arquivo eh atualizada
+                    } 
+
                     arquivo = fopen(nomebin, "rb+"); // abre o arquivo de novo em modo rb+ para pesquisar e editar o arquivo
                 }
                 else
@@ -429,16 +433,24 @@ void insere_registro()
 
                     fseek(arquivo, 1600 + (160 * topo), SEEK_SET); // fseek na posicao com remocao
                     DADO = le_registro(arquivo);                   // le a posicao para armazenar o valor de topo
+                    aux=topo;                                      //salva o topo antigo para caso aconteca um problema na leitura de dados do usuario
                     topo = DADO.encadeamento;                      // armazena o valor de topo novo
                     DADO = le_do_teclado();                        // le os dados que serao inseridos no lugar do registro apagado
+
+                    if (DADO.removido!='3')// DADO.removido usado como flag, se houver uma inconsistencia na leitura de dados eles nao sao inseridos
+                    {
                     fseek(arquivo, -160, SEEK_CUR);                // volta o ponteiro para realizar a insercao
                     atualiza_dado_bin(DADO, arquivo);              // escreve a nova informacao por cima do local onde havia uma remocao
+                    CAB.nroRegRem--;                               //nro de registros removidos diminui
+                    }else{
+                        topo=aux;   //volta com o valor de topo anterior caso o usuario faca algo errado
+                    }
+
                 }
             }
             fclose(arquivo);
 
             // ATUALIZA AS INFORMACOES DO CABECALHO
-            CAB.nroRegRem -= nroInsercoes;
             if (CAB.nroRegRem < 0)
                 CAB.nroRegRem = 0;
 
