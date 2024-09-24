@@ -74,7 +74,7 @@ void escreve_cabecalho_bin(char nomebin[31],cabecalho CAB){
 //a funcao atualiza um cabecalho de acordo com as edicoes que foram feitas num arquivo binario
 void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB){
     FILE *arquivobin;
-    arquivobin = fopen(nomebin, "rb+"); //abre o arquivo para atualizar o cabecalho
+    arquivobin = fopen(nomebin, "rb+"); //abre o arquivo para atualizar o cabecalho, o modo rb+ é necessario para isso
     if(arquivobin==NULL){
         printf(ERRO_PADRAO);
     }
@@ -88,7 +88,7 @@ void atualiza_cabecalho_bin(char nomebin[31],cabecalho CAB){
     fclose(arquivobin);
     }
 }
-//a funcao escreve um dado no arquivo binario que esta sendo criado
+//a funcao escreve um dado no arquivo binario que esta sendo criado, abre em modo append para escrever no fim do arquivo
 void escreve_dado_bin(char nomebin[31],dados DADO){
     FILE *arquivobin;
     arquivobin = fopen(nomebin, "ab");
@@ -102,8 +102,7 @@ void escreve_dado_bin(char nomebin[31],dados DADO){
     fclose(arquivobin);
 }
 
-//a funcao atualiza um dado num determinado campo do arquivo binario, o ponteiro com a localizacao
-//de onde sera inserido o dado eh parametro da funcao
+//a funcao atualiza um dado removendo ele logicamente e preenchendo o resto dos campos com o lixo "$"
 void remove_dado_bin(FILE *arquivobin,int encadeamento){
     char lixo='$';
     char remo='1';
@@ -114,8 +113,8 @@ void remove_dado_bin(FILE *arquivobin,int encadeamento){
         fwrite(&lixo, 1, 1, arquivobin);
 
 }
-
-//a funcao atualiza um dado removendo ele logicamente e preenchendo o resto dos campos com o lixo "$"
+//a funcao atualiza um dado num determinado campo do arquivo binario, o ponteiro com a localizacao
+//de onde sera inserido o dado eh parametro da funcao
 void atualiza_dado_bin(dados DADO,FILE *arquivobin){
 
     fwrite(&DADO.removido, 1, 1, arquivobin);

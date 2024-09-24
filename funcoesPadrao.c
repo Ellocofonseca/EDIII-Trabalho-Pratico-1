@@ -102,7 +102,7 @@ dados le_do_teclado()
 
     char populacao[31];
     char velocidade[31];
-    char medVelocidade[21];
+    char medVelocidade[31];
     char tamanho[31];
     char var[142];
 
@@ -117,6 +117,13 @@ dados le_do_teclado()
     scan_quote_string(tamanho);
     scan_quote_string(especie);
     scan_quote_string(alimento);
+
+    if((strlen(nome)+strlen(dieta)+strlen(habitat)+strlen(especie)+strlen(tipo)+strlen(alimento)+6)>142){
+        DADO.removido=='3'; //INDICA QUE O USUARIO FOI MENINO NOVO E COLOCOU MUITOS CARATERES PARA ENTRAR NO CAMPO DE TAMANHO VARIAVEL
+                            //OU EM OUTRO CAMPO
+        
+        printf(ERRO_PADRAO" (Muitos caracteres no campo variavel)");
+    }else{
 
     //STRING
     if (!strcmp(nome, ""))
@@ -203,6 +210,6 @@ dados le_do_teclado()
         var[j] = '$';
 
     strcpy(DADO.variavel, var); // coloca a string montada na variavel de registro
-
+    }
     return DADO;
 }
