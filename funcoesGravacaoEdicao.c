@@ -393,7 +393,7 @@ void insere_registro()
         printf(ERRO_PADRAO);
     }
     else
-    { // le o cabecalho do arquivo e ajusta o ponteiro para ler os dados em seguida
+    { // le o cabecalho do arquivo e ajusta o ponteiro para ler os dados em seguida depois de atualizar o cabecalho
         CAB = le_cabecalho(arquivo);
         if (CAB.status == '0')
         { // se o cabecalho tiver status 0 nao faz nada no arquivo e fecha ele
@@ -402,6 +402,8 @@ void insere_registro()
         }
         else
         {
+            CAB.status = '0';
+            atualiza_cabecalho_bin(nomebin,CAB);//coloca status 0 antes de começar a editar o arquivo
 
             fseek(arquivo, 1600, SEEK_SET);
 
